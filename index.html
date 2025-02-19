@@ -66,12 +66,18 @@
     <body>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
-        <button onclick="loadCSV()">Load NBA Players</button>
+        
         <div id="guessesContainer" class="guess-container" style="margin-top: 40px; margin-bottom: 20px; gap: 20px;">
             <!-- Guesses will be dynamically added here -->
         </div>
     </body>
     <script>
+        let playerData = [];
+        let playerInfo = {};
+        let filteredPlayers = [];
+        let guesses = [];
+        let guessCount = 0;
+
         function loadCSV() {
             const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
             fetch(csvUrl)
@@ -133,6 +139,8 @@
             playerList.appendChild(playerItem);
             });
         }
+
+        loadCSV();
     </script>
 </body>
 </html>
