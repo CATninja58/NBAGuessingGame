@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundmap Artist Guesser Solver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    
+
+    </style>
+    <script>
+        function loadCSV() {
+            const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+            fetch(csvUrl)
+                .then(response => response.text())
+                .then(csvText => parseCSV(csvText))
+                .catch(error => console.error("Error loading CSV file:", error));
+        }
+
+        function parseCSV(csvText) {
+            const rows = csvText.split("\n");
+            rows.shift();
+            playerData = rows.map(row => {
+                const [player, number, position, age, height, weight, team] = row.split(",");
+                return { player, number, position, age, height, weight, team };
+            });
+            filteredPlayers = [...playerData];
+            displayArtists();
+        }
+
+        function displayPlayerInfo(playerName) {
+            const player = playerData.find(player => player.player === playerName);
+            if (player) {
+            playerInfo = player;
+            addGuess(player);
+            }
+        }
+
+        function addGuess(player) {
+            guessCount++;
+            const guess = document.createElement("div");
+            guess.classList.add("guess");
+            guess.innerHTML = `
+                <div class="player">${player.player}</div>
+                <div class="number">${player.number}</div>
+                <div class="position">${player.position}</div>
+                <div class="age">${player.age}</div>
+                <div class="height">${player.height}</div>
+                <div class="weight">${player.weight}</div>
+                <div class="team">${player.team}</div>
+            `;
+            document.querySelector(".guesses").appendChild(guess);
+        }
+    </script>
+</body>
+</html>
