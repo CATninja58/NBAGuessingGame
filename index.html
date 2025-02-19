@@ -208,6 +208,26 @@
             filteredPlayers = [...playerData];
             displayPlayers();
         }
+
+        function searchPlayer() {
+            const query = document.getElementById("playerSearch").value.toLowerCase();
+            const searchResults = document.getElementById("searchResults");
+            searchResults.innerHTML = '';
+
+            if (query) {
+                const matches = playersData.filter(player => player.player.toLowerCase().includes(query));
+                matches.forEach(match => {
+                    const resultDiv = document.createElement("div");
+                    resultDiv.textContent = match.player;
+                    resultDiv.onclick = () => {
+                        displayPlayerInfo(match.player);
+                        document.getElementById("playerSearch").value = '';
+                        searchResults.innerHTML = '';
+                    };
+                    searchResults.appendChild(resultDiv);
+                });
+            }
+        }
         
         function displayPlayerInfo(playerName) {
             const player = playerData.find(player => player.player === playerName);
