@@ -6,9 +6,66 @@
     <title>Soundmap Artist Guesser Solver</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-    
+        body {
+            font-family: Arial, sans-serif; /* Set font family */
+            text-align: center; /* Center align text */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+            display: flex; /* Use flexbox layout */
+            flex-direction: column; /* Arrange children in a column */
+            align-items: center; /* Center align items horizontally */
+            justify-content: flex-start; /* Align items to the top */
+            background-color: #121212; /* Background color */
+        }
+
+        /* Guess container styles */
+        .guess-container {
+            margin-top: 20px; /* Add top margin */
+            width: 80%; /* Set width */
+            display: flex; /* Use flexbox layout */
+            flex-direction: column; /* Arrange children in a column */
+            align-items: center; /* Center align items horizontally */
+            color: #f4f4f4 !important;
+        }
+        
+        /* Guess title styles */
+        .guess-title {
+            font-weight: bold; /* Bold text */
+            margin-top: 40px; /* Add top margin */
+            margin-bottom: 10px; /* Add bottom margin to prevent overlap */
+            color: #88888a; /* Guess title color */
+        }
+
+        /* Guess player styles */
+        .guess-player {
+            margin-top: 10px; /* Add top margin */
+            margin-bottom: 20px; /* Add bottom margin */
+            color: #f4f4f4 !important; /* Player name color */
+        }
+
+        /* Guess boxes styles */
+        .guess-boxes {
+            margin-top: 20px; /* Add top margin */
+            margin-bottom: 5px; /* Add bottom margin */
+            display: grid; /* Use grid layout */
+            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            gap: 5px; /* Gap between grid items */
+        }
+
+        /* Last guess box styles */
+        .guess-boxes:last-child {
+            margin-bottom: 20px; /* Add bottom margin */
+        }
 
     </style>
+    <body>
+        <div class="footer-text">Made by u/CATninja58</div>
+        <h1>NBA Player Guesser</h1>
+        <button onclick="loadCSV()">Load NBA Players</button>
+        <div id="guessesContainer" class="guess-container" style="margin-top: 40px; margin-bottom: 20px; gap: 20px;">
+            <!-- Guesses will be dynamically added here -->
+        </div>
+    </body>
     <script>
         function loadCSV() {
             const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
