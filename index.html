@@ -156,6 +156,9 @@
     <body>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
+
+        <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchplayer()">
+        <div id="searchResults"></div>
         
         <div id="guessesContainer" class="guess-container" style="margin-top: 40px; margin-bottom: 20px; gap: 20px;">
             <!-- Guesses will be dynamically added here -->
@@ -169,7 +172,7 @@
                         <tr>
                             <th style="min-width: 300px;">Player</th>
                             <th style="min-width: 200px;">Number</th>
-                            <th style="min-width: 250px;">Position</th>
+                            <th style="min-width: 250px;">Age</th>
                             <th style="min-width: 200px;">Age</th>
                             <th style="min-width: 200px;">Height</th>
                             <th style="min-width: 200px;">Weight</th>
@@ -202,8 +205,8 @@
             const rows = csvText.split("\n");
             rows.shift();
             playerData = rows.map(row => {
-                const [player, number, position, age, height, weight, team] = row.split(",");
-                return { player, number, position, age, height, weight, team };
+                const [player, number, Age, age, height, weight, team] = row.split(",");
+                return { player, number, Age, age, height, weight, team };
             });
             filteredPlayers = [...playerData];
             displayPlayers();
@@ -265,7 +268,7 @@
         }
 
         function createButtons(player, container, guess) {
-            const categories = ["number", "position", "age", "height", "weight", "team"];
+            const categories = ["number", "Age", "age", "height", "weight", "team"];
             categories.forEach(category => {
             const button = document.createElement("button");
             button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]}</span><br><span class="button-text">(${guess.selectedOptions[category] || "Choose Option"})</span>`;
@@ -284,7 +287,7 @@
             playerItem.innerHTML = `
                 <td>${player.player}</td>
                 <td>${player.number}</td>
-                <td>${player.position}</td>
+                <td>${player.Age}</td>
                 <td>${player.age}</td>
                 <td>${player.height}</td>
                 <td>${player.weight}</td>
@@ -293,6 +296,38 @@
 
             playerList.appendChild(playerItem);
             });
+        }
+
+        function getRelation(category, playerValue, correctValue) {
+            if (playerValue === correctValue) {
+                return 'correct';
+            } else if (category === 'number') {
+                return getNumberRelation(playerValue, correctValue);
+            } else if (category === 'Age') {
+                return getAgeRelation(playerValue, correctValue);
+            } else {
+                return 'wrong';
+            }
+        }
+
+        function getNumberRelation(playerValue, correctValue) {
+            const playerNumber = parseInt(playerValue);
+            const correctNumber = parseInt(correctValue);
+            if (playerNumber > correctNumber) {
+                return playerNumber - correctNumber <= 10 ? 'close v' : 'later v';
+            } else {
+                return correctNumber - playerNumber <= 10 ? 'close ^' : 'earlier ^';
+            }
+        }
+
+        function getAgeRelation(playerValue, correctValue) {
+            const playerAge = parseInt(playerValue);
+            const correctAge = parseInt(correctValue);
+            if (playerAge < correctAge) {
+                return correctAge - playerAge <= 5 ? 'close v' : 'higher v';
+            } else {
+                return playerAge - correctAge <= 5 ? 'close ^' : 'lower ^';
+            }
         }
 
         loadCSV();
