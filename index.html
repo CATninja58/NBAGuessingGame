@@ -238,8 +238,10 @@
         function displayPlayerInfo(playerName) {
             const player = playerData.find(player => player.player === playerName);
             if (player) {
-            playerInfo = player;
-            addGuess(player);
+                playerInfo = player;
+                filteredPlayers = [player];
+                displayPlayers();
+                addGuess(player);
             }
         }
 
