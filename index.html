@@ -210,7 +210,7 @@
                 return { player, number, position, age, height, weight, team };
             });
             filteredPlayers = [...playerData];
-            correct_player = playersData[Math.floor(Math.random() * playersData.length)];
+            correct_player = playerData[Math.floor(Math.random() * playerData.length)];
             console.log("Correct player:", correct_player); // Debugging line
             displayPlayers();
         }
@@ -221,7 +221,7 @@
             searchResults.innerHTML = '';
 
             if (query) {
-                const matches = playersData.filter(player => player.player.toLowerCase().includes(query));
+                const matches = playerData.filter(player => player.player.toLowerCase().includes(query));
                 matches.forEach(match => {
                     const resultDiv = document.createElement("div");
                     resultDiv.textContent = match.player;
