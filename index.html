@@ -192,7 +192,7 @@
         let filteredPlayers = [];
         let guesses = [];
         let guessCount = 0;
-        let correct_artist = null;
+        let correct_player = null;
 
         function loadCSV() {
             const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
@@ -210,8 +210,8 @@
                 return { player, number, position, age, height, weight, team };
             });
             filteredPlayers = [...playerData];
-            correct_artist = artistsData[Math.floor(Math.random() * artistsData.length)];
-            console.log("Correct Artist:", correct_artist); // Debugging line
+            correct_player = playersData[Math.floor(Math.random() * playersData.length)];
+            console.log("Correct player:", correct_player); // Debugging line
             displayPlayers();
         }
 
