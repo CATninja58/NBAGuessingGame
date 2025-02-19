@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soundmap Artist Guesser Solver</title>
+    <title>NBA Player Guesser Game</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -96,7 +96,7 @@
             filteredPlayers = [...playerData];
             displayPlayers();
         }
-
+        
         function displayPlayerInfo(playerName) {
             const player = playerData.find(player => player.player === playerName);
             if (player) {
@@ -107,18 +107,39 @@
 
         function addGuess(player) {
             guessCount++;
-            const guess = document.createElement("div");
-            guess.classList.add("guess");
-            guess.innerHTML = `
-                <div class="player">${player.player}</div>
-                <div class="number">${player.number}</div>
-                <div class="position">${player.position}</div>
-                <div class="age">${player.age}</div>
-                <div class="height">${player.height}</div>
-                <div class="weight">${player.weight}</div>
-                <div class="team">${player.team}</div>
-            `;
-            document.querySelector(".guesses").appendChild(guess);
+            const guessesContainer = document.getElementById("guessesContainer");
+
+            const guessTitle = document.createElement("div");
+            guessTitle.classList.add("guess-title");
+            guessTitle.textContent = `Guess #${guessCount}`;
+            guessesContainer.appendChild(guessTitle);
+
+            const playerName = document.createElement("div");
+            playerName.textContent = player.player;
+            
+            guessesContainer.appendChild(playerName);
+
+            const guessBoxes = document.createElement("div");
+            guessBoxes.style.height = "50px"; /* Set fixed height */
+            guessBoxes.classList.add("button-container");
+            guessBoxes.style.height = "50px"; /* Set fixed height */
+            guessBoxes.classList.add("guess-boxes");
+            guessesContainer.appendChild(guessBoxes);
+
+            const guess = { player, selectedOptions: {} };
+            guesses.push(guess);
+
+            createButtons(player, guessBoxes, guess);
+        }
+
+        function createButtons(player, container, guess) {
+            const categories = ["number", "position", "age", "height", "weight", "team"];
+            categories.forEach(category => {
+            const button = document.createElement("button");
+            button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]}</span><br><span class="button-text">(${guess.selectedOptions[category] || "Choose Option"})</span>`;
+            button.onclick = () => showDropdown(button, category, player[category], guess);
+            container.appendChild(button);
+            });
         }
 
         function displayPlayers() {
