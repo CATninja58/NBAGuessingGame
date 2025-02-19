@@ -172,7 +172,7 @@
                         <tr>
                             <th style="min-width: 300px;">Player</th>
                             <th style="min-width: 200px;">Number</th>
-                            <th style="min-width: 250px;">Age</th>
+                            <th style="min-width: 250px;">Position</th>
                             <th style="min-width: 200px;">Age</th>
                             <th style="min-width: 200px;">Height</th>
                             <th style="min-width: 200px;">Weight</th>
@@ -192,6 +192,7 @@
         let filteredPlayers = [];
         let guesses = [];
         let guessCount = 0;
+        let correct_artist = null;
 
         function loadCSV() {
             const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
@@ -205,10 +206,12 @@
             const rows = csvText.split("\n");
             rows.shift();
             playerData = rows.map(row => {
-                const [player, number, Age, age, height, weight, team] = row.split(",");
-                return { player, number, Age, age, height, weight, team };
+                const [player, number, position, age, height, weight, team] = row.split(",");
+                return { player, number, position, age, height, weight, team };
             });
             filteredPlayers = [...playerData];
+            correct_artist = artistsData[Math.floor(Math.random() * artistsData.length)];
+            console.log("Correct Artist:", correct_artist); // Debugging line
             displayPlayers();
         }
 
@@ -268,33 +271,14 @@
         }
 
         function createButtons(player, container, guess) {
-            const categories = ["number", "Age", "age", "height", "weight", "team"];
+            const categories = ["number", "position", "age", "height", "weight", "team"];
             categories.forEach(category => {
             const button = document.createElement("button");
-            button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]}</span><br><span class="button-text">(${guess.selectedOptions[category] || "Choose Option"})</span>`;
-            button.onclick = () => showDropdown(button, category, player[category], guess);
+            const relation = getRelation(category, player[category], correct_player[category]);
+            button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]} (${relation})</span>`;
+            button.className = getButtonColor(relation);
+            guess.selectedOptions[category] = relation;
             container.appendChild(button);
-            });
-        }
-
-        function displayPlayers() {
-            const playerList = document.getElementById("playerList");
-            playerList.innerHTML = "";
-
-            filteredPlayers.forEach(player => {
-            const playerItem = document.createElement("tr");
-            
-            playerItem.innerHTML = `
-                <td>${player.player}</td>
-                <td>${player.number}</td>
-                <td>${player.Age}</td>
-                <td>${player.age}</td>
-                <td>${player.height}</td>
-                <td>${player.weight}</td>
-                <td>${player.team}</td>
-            `;
-
-            playerList.appendChild(playerItem);
             });
         }
 
@@ -303,7 +287,7 @@
                 return 'correct';
             } else if (category === 'number') {
                 return getNumberRelation(playerValue, correctValue);
-            } else if (category === 'Age') {
+            } else if (category === 'age') {
                 return getAgeRelation(playerValue, correctValue);
             } else {
                 return 'wrong';
@@ -324,10 +308,41 @@
             const playerAge = parseInt(playerValue);
             const correctAge = parseInt(correctValue);
             if (playerAge < correctAge) {
-                return correctAge - playerAge <= 5 ? 'close v' : 'higher v';
+                return correctAge - playerAge <= 10 ? 'close v' : 'higher v';
             } else {
-                return playerAge - correctAge <= 5 ? 'close ^' : 'lower ^';
+                return playerAge - correctAge <= 10 ? 'close ^' : 'lower ^';
             }
+        }
+
+        function getButtonColor(relation) {
+            if (relation === 'correct') {
+                return 'green';
+            } else if (relation === 'close ^' || relation === 'close v') {
+                return 'orange';
+            } else {
+                return 'grey';
+            }
+        }
+
+        function displayPlayers() {
+            const playerList = document.getElementById("playerList");
+            playerList.innerHTML = "";
+
+            filteredPlayers.forEach(player => {
+            const playerItem = document.createElement("tr");
+            
+            playerItem.innerHTML = `
+                <td>${player.player}</td>
+                <td>${player.number}</td>
+                <td>${player.position}</td>
+                <td>${player.age}</td>
+                <td>${player.height}</td>
+                <td>${player.weight}</td>
+                <td>${player.team}</td>
+            `;
+
+            playerList.appendChild(playerItem);
+            });
         }
 
         loadCSV();
