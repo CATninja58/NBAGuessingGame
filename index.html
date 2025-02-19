@@ -65,8 +65,8 @@
             align-items: center; /* Center align items horizontally */
         }
         
-        /* Artist list wrapper styles */
-        .artist-list-wrapper {
+        /* player list wrapper styles */
+        .player-list-wrapper {
             width: 100%; /* Set width */
             overflow-x: auto; /* Enable horizontal scrolling */
         }
@@ -160,6 +160,28 @@
         <div id="guessesContainer" class="guess-container" style="margin-top: 40px; margin-bottom: 20px; gap: 20px;">
             <!-- Guesses will be dynamically added here -->
         </div>
+        <div class="results-container">
+            <div class="footer-text" style="font-size: 16px;">List of possible players</div>
+            <div class="footer-text">Scroll to the right for all the stats on players</div>
+            <div class="player-list-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="min-width: 300px;">Player</th>
+                            <th style="min-width: 200px;">Number</th>
+                            <th style="min-width: 250px;">Position</th>
+                            <th style="min-width: 200px;">Age</th>
+                            <th style="min-width: 200px;">Height</th>
+                            <th style="min-width: 200px;">Weight</th>
+                            <th style="min-width: 200px;">Team</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerList"></tbody>
+                </table>
+            </div>
+            <!-- Players matching the guess will be displayed here -->
+        </div>
+        <div class="footer-text">Made by u/CATninja58</div>
     </body>
     <script>
         let playerData = [];
