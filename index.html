@@ -229,7 +229,7 @@
             });
             filteredPlayers = [...playerData];
             correct_player = playerData[Math.floor(Math.random() * playerData.length)];
-            console.log("Correct player:", correct_player); // Debugging line
+            document.getElementById("correctArtist").innerHTML = `Correct Player: ${correct_player.player}`;
             displayPlayers();
         }
 
