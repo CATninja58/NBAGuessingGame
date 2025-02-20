@@ -291,8 +291,9 @@
 
             const guessBoxes = document.createElement("div");
             guessBoxes.style.height = "50px"; /* Set fixed height */
+            guessBoxes.classList.add("button-container");
+            guessBoxes.style.height = "50px"; /* Set fixed height */
             guessBoxes.classList.add("guess-boxes");
-            guessBoxes.style.gridTemplateColumns = "repeat(6, 1fr)"; /* 6 equal columns */
             guessesContainer.appendChild(guessBoxes);
 
             const guess = { player, selectedOptions: {} };
