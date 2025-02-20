@@ -334,9 +334,9 @@
             const playerNumber = parseInt(playerValue);
             const correctNumber = parseInt(correctValue);
             if (playerNumber > correctNumber) {
-                return playerNumber - correctNumber <= 15 ? 'close v' : 'larger v';
+                return playerNumber - correctNumber <= 15 ? 'close v' : 'smaller v';
             } else {
-                return correctNumber - playerNumber <= 15 ? 'close ^' : 'smaller ^';
+                return correctNumber - playerNumber <= 15 ? 'close ^' : 'larger ^';
             }
         }
 
@@ -344,9 +344,9 @@
             const playerAge = parseInt(playerValue);
             const correctAge = parseInt(correctValue);
             if (playerAge < correctAge) {
-                return correctAge - playerAge <= 5 ? 'close v' : 'younger v';
+                return correctAge - playerAge <= 5 ? 'close ^' : 'older ^';
             } else {
-                return playerAge - correctAge <= 5 ? 'close ^' : 'older ^';
+                return playerAge - correctAge <= 5 ? 'close v' : 'younger v';
             }
         }
 
