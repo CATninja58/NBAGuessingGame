@@ -172,6 +172,7 @@
     <body>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
+        <div id="correctArtist"></div>
 
         <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchPlayer()">
         <div id="searchResults"></div>
@@ -180,7 +181,7 @@
             <!-- Guesses will be dynamically added here -->
         </div>
         <div class="results-container">
-            <div class="footer-text" style="font-size: 16px;">List of possible players</div>
+            <div class="footer-text" style="font-size: 16px;">List of players</div>
             <div class="footer-text">Scroll to the right for all the stats on players</div>
             <div class="player-list-wrapper">
                 <table>
@@ -209,6 +210,7 @@
         let guesses = [];
         let guessCount = 0;
         let correct_player = null;
+        document.getElementById("correctArtist").value = correct_player;
 
         function loadCSV() {
             const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
