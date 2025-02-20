@@ -334,9 +334,9 @@
             const playerNumber = parseInt(playerValue);
             const correctNumber = parseInt(correctValue);
             if (playerNumber > correctNumber) {
-                return playerNumber - correctNumber <= 15 ? 'close v' : 'smaller v';
+                return playerNumber - correctNumber <= 15 ? 'close v' : 'smaller v'; //within 15 (15 numbers above)
             } else {
-                return correctNumber - playerNumber <= 15 ? 'close ^' : 'larger ^';
+                return correctNumber - playerNumber <= 15 ? 'close ^' : 'larger ^'; //within 15 (15 numbers below)
             }
         }
 
@@ -344,9 +344,9 @@
             const playerAge = parseInt(playerValue);
             const correctAge = parseInt(correctValue);
             if (playerAge < correctAge) {
-                return correctAge - playerAge <= 5 ? 'close ^' : 'older ^';
+                return correctAge - playerAge <= 5 ? 'close ^' : 'older ^'; //within 5 years (5 years below)
             } else {
-                return playerAge - correctAge <= 5 ? 'close v' : 'younger v';
+                return playerAge - correctAge <= 5 ? 'close v' : 'younger v'; . //within 5 years (5 years above)
             }
         }
 
@@ -355,9 +355,9 @@
             const correctHeight = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
 
             if (playerHeight < correctHeight) {
-                return correctHeight - playerHeight <= 5 ? 'close ^' : 'shorter ^'; //within 5 inches (5 inches below)
+                return correctHeight - playerHeight <= 5 ? 'close ^' : 'taller ^'; //within 5 inches (5 inches below)
             } else {
-                return playerHeight - correctHeight <= 5 ? 'close v' : 'taller v'; //within 5 inches (5 inches above)
+                return playerHeight - correctHeight <= 5 ? 'close v' : 'shorter v'; //within 5 inches (5 inches above)
             }
         }
 
@@ -365,9 +365,9 @@
             const playerWeight = parseInt(playerValue);
             const correctWeight = parseInt(correctValue);
             if (playerWeight < correctWeight) {
-                return correctWeight - playerWeight <= 20 ? 'close v' : 'lighter v';
+                return correctWeight - playerWeight <= 20 ? 'close ^' : 'heavier ^'; //within 20 pounds (20 pounds below)
             } else {
-                return playerWeight - correctWeight <= 20 ? 'close ^' : 'heavier ^';
+                return playerWeight - correctWeight <= 20 ? 'close v' : 'lighter v'; //within 20 pounds (20 pounds above)
             }
         }
 
