@@ -38,7 +38,7 @@
         /* Button container styles */
         .button-container {
             display: grid; /* Use grid layout */
-            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
             gap: 5px; /* Gap between grid items */
             margin-top: 20px; /* Add top margin */
             height: auto; /* Auto height for guess boxes */
@@ -46,7 +46,7 @@
         
         /* Button styles */
         button {
-            width: 250px; /* Fixed width for buttons */
+            width: 200px; /* Fixed width for buttons */
             height: 50px; /* Fixed height for buttons */
             font-size: 14px; /* Set font size */
             background-color: #1c1c1c; /* Button background color */
@@ -152,7 +152,7 @@
             margin-top: 20px; /* Add top margin */
             margin-bottom: 5px; /* Add bottom margin */
             display: grid; /* Use grid layout */
-            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
             gap: 5px; /* Gap between grid items */
         }
 
@@ -179,6 +179,8 @@
         <div id="correctArtistHeight"></div>
         <div id="correctArtistWeight"></div>
         <div id="correctArtistTeam"></div>
+        <div id="correctArtistDivision"></div>
+        <div id="correctArtistConference"></div>
 
         <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchPlayer()">
         <div id="searchResults"></div>
@@ -200,6 +202,8 @@
                             <th style="min-width: 200px;">Height</th>
                             <th style="min-width: 200px;">Weight</th>
                             <th style="min-width: 200px;">Team</th>
+                            <th style="min-width: 200px;">Division</th>
+                            <th style="min-width: 200px;">Conference</th>
                         </tr>
                     </thead>
                     <tbody id="playerList"></tbody>
@@ -225,13 +229,13 @@
                 .then(csvText => parseCSV(csvText))
                 .catch(error => console.error("Error loading CSV file:", error));
         }
-
+        
         function parseCSV(csvText) {
             const rows = csvText.split("\n");
             rows.shift();
             playerData = rows.map(row => {
-                const [player, number, position, age, height, weight, team] = row.split(",");
-                return { player, number, position, age, height, weight, team };
+                const [player, number, position, age, height, weight, team, division, conference] = row.split(",");
+                return { player, number, position, age, height, weight, team, division, conference };
             });
             filteredPlayers = [...playerData];
             correct_player = playerData[Math.floor(Math.random() * playerData.length)];
@@ -242,6 +246,8 @@
             document.getElementById("correctArtistHeight").innerHTML = `Correct Height: ${correct_player.height}`;
             document.getElementById("correctArtistWeight").innerHTML = `Correct Weight: ${correct_player.weight}`;
             document.getElementById("correctArtistTeam").innerHTML = `Correct Team: ${correct_player.team}`;
+            document.getElementById("correctArtistDivision").innerHTML = `Correct Division: ${correct_player.division}`;
+            document.getElementById("correctArtistConference").innerHTML = `Correct Conference: ${correct_player.conference}`;
             displayPlayers();
         }
 
@@ -303,7 +309,7 @@
         }
 
         function createButtons(player, container, guess) {
-            const categories = ["number", "position", "age", "height", "weight", "team"];
+            const categories = ["number", "position", "age", "height", "weight", "team", "division", "conference"];
             categories.forEach(category => {
             const button = document.createElement("button");
             const relation = getRelation(category, player[category], correct_player[category]);
@@ -371,7 +377,6 @@
             }
         }
 
-
         function getButtonColor(relation) {
             if (relation === 'correct') {
                 return 'green';
@@ -397,6 +402,8 @@
                 <td>${player.height}</td>
                 <td>${player.weight}</td>
                 <td>${player.team}</td>
+                <td>${player.division}</td>
+                <td>${player.conference}</td>
             `;
 
             playerList.appendChild(playerItem);
