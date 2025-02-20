@@ -351,13 +351,13 @@
         }
 
         function getHeightRelation(playerValue, correctValue) {
-            const playerHeight = parseInt(playerValue).split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
-            const correctHeight = parseInt(correctValue).split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+            const playerHeight = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+            const correctHeight = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
 
             if (playerHeight < correctHeight) {
-                return correctHeight - playerHeight <= 5 ? 'close v' : 'shorter v'; //within 5 inches (5 inches below)
+                return correctHeight - playerHeight <= 5 ? 'close ^' : 'shorter ^'; //within 5 inches (5 inches below)
             } else {
-                return playerHeight - correctHeight <= 5 ? 'close ^' : 'taller ^'; //within 5 inches (5 inches above)
+                return playerHeight - correctHeight <= 5 ? 'close v' : 'taller v'; //within 5 inches (5 inches above)
             }
         }
 
