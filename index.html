@@ -291,9 +291,8 @@
 
             const guessBoxes = document.createElement("div");
             guessBoxes.style.height = "50px"; /* Set fixed height */
-            guessBoxes.classList.add("button-container");
-            guessBoxes.style.height = "50px"; /* Set fixed height */
             guessBoxes.classList.add("guess-boxes");
+            guessBoxes.style.gridTemplateColumns = "repeat(6, 1fr)"; /* 6 equal columns */
             guessesContainer.appendChild(guessBoxes);
 
             const guess = { player, selectedOptions: {} };
@@ -305,12 +304,12 @@
         function createButtons(player, container, guess) {
             const categories = ["number", "position", "age", "height", "weight", "team"];
             categories.forEach(category => {
-            const button = document.createElement("button");
-            const relation = getRelation(category, player[category], correct_player[category]);
-            button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]} (${relation})</span>`;
-            button.className = getButtonColor(relation);
-            guess.selectedOptions[category] = relation;
-            container.appendChild(button);
+                const button = document.createElement("button");
+                const relation = getRelation(category, player[category], correct_player[category]);
+                button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]} (${relation})</span>`;
+                button.className = getButtonColor(relation);
+                guess.selectedOptions[category] = relation;
+                container.appendChild(button);
             });
         }
 
