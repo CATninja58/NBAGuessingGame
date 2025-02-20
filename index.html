@@ -173,6 +173,12 @@
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
         <div id="correctArtist"></div>
+        <div id="correctArtistNumber"></div>
+        <div id="correctArtistPosition"></div>
+        <div id="correctArtistAge"></div>
+        <div id="correctArtistHeight"></div>
+        <div id="correctArtistWeight"></div>
+        <div id="correctArtistTeam"></div>
 
         <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchPlayer()">
         <div id="searchResults"></div>
@@ -210,7 +216,7 @@
         let guesses = [];
         let guessCount = 0;
         let correct_player = null;
-        document.getElementById("correctArtist").value = correct_player;
+        
 
         function loadCSV() {
             const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
@@ -230,6 +236,12 @@
             filteredPlayers = [...playerData];
             correct_player = playerData[Math.floor(Math.random() * playerData.length)];
             document.getElementById("correctArtist").innerHTML = `Correct Player: ${correct_player.player}`;
+            document.getElementById("correctArtistNumber").innerHTML = `Correct Number: ${correct_player.number}`;
+            document.getElementById("correctArtistPosition").innerHTML = `Correct Position: ${correct_player.position}`;
+            document.getElementById("correctArtistAge").innerHTML = `Correct Age: ${correct_player.age}`;
+            document.getElementById("correctArtistHeight").innerHTML = `Correct Height: ${correct_player.height}`;
+            document.getElementById("correctArtistWeight").innerHTML = `Correct Weight: ${correct_player.weight}`;
+            document.getElementById("correctArtistTeam").innerHTML = `Correct Team: ${correct_player.team}`;
             displayPlayers();
         }
 
@@ -309,6 +321,10 @@
                 return getNumberRelation(playerValue, correctValue);
             } else if (category === 'age') {
                 return getAgeRelation(playerValue, correctValue);
+            } else if (category === 'height') {
+                return getHeightRelation(playerValue, correctValue);
+            } else if (category === 'weight') {
+                return getWeightRelation(playerValue, correctValue);
             } else {
                 return 'wrong';
             }
@@ -318,9 +334,9 @@
             const playerNumber = parseInt(playerValue);
             const correctNumber = parseInt(correctValue);
             if (playerNumber > correctNumber) {
-                return playerNumber - correctNumber <= 10 ? 'close v' : 'later v';
+                return playerNumber - correctNumber <= 15 ? 'close v' : 'smaller v';
             } else {
-                return correctNumber - playerNumber <= 10 ? 'close ^' : 'earlier ^';
+                return correctNumber - playerNumber <= 15 ? 'close ^' : 'larger ^';
             }
         }
 
@@ -328,11 +344,33 @@
             const playerAge = parseInt(playerValue);
             const correctAge = parseInt(correctValue);
             if (playerAge < correctAge) {
-                return correctAge - playerAge <= 10 ? 'close v' : 'higher v';
+                return correctAge - playerAge <= 5 ? 'close ^' : 'older ^';
             } else {
-                return playerAge - correctAge <= 10 ? 'close ^' : 'lower ^';
+                return playerAge - correctAge <= 5 ? 'close v' : 'younger v';
             }
         }
+
+        function getHeightRelation(playerValue, correctValue) {
+            const playerHeight = parseInt(playerValue).split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+            const correctHeight = parseInt(correctValue).split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+
+            if (playerHeight < correctHeight) {
+                return correctHeight - playerHeight <= 5 ? 'close v' : 'shorter v'; //within 5 inches (5 inches below)
+            } else {
+                return playerHeight - correctHeight <= 5 ? 'close ^' : 'taller ^'; //within 5 inches (5 inches above)
+            }
+        }
+
+        function getWeightRelation(playerValue, correctValue) {
+            const playerWeight = parseInt(playerValue);
+            const correctWeight = parseInt(correctValue);
+            if (playerWeight < correctWeight) {
+                return correctWeight - playerWeight <= 20 ? 'close v' : 'lighter v';
+            } else {
+                return playerWeight - correctWeight <= 20 ? 'close ^' : 'heavier ^';
+            }
+        }
+
 
         function getButtonColor(relation) {
             if (relation === 'correct') {
