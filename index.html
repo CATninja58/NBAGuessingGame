@@ -321,6 +321,10 @@
                 return getNumberRelation(playerValue, correctValue);
             } else if (category === 'age') {
                 return getAgeRelation(playerValue, correctValue);
+            } else if (category === 'height') {
+                return getHeightRelation(playerValue, correctValue);
+            } else if (category === 'weight') {
+                return getWeightRelation(playerValue, correctValue);
             } else {
                 return 'wrong';
             }
@@ -330,9 +334,9 @@
             const playerNumber = parseInt(playerValue);
             const correctNumber = parseInt(correctValue);
             if (playerNumber > correctNumber) {
-                return playerNumber - correctNumber <= 15 ? 'close v' : 'later v';
+                return playerNumber - correctNumber <= 15 ? 'close v' : 'larger v';
             } else {
-                return correctNumber - playerNumber <= 15 ? 'close ^' : 'earlier ^';
+                return correctNumber - playerNumber <= 15 ? 'close ^' : 'smaller ^';
             }
         }
 
@@ -340,9 +344,9 @@
             const playerAge = parseInt(playerValue);
             const correctAge = parseInt(correctValue);
             if (playerAge < correctAge) {
-                return correctAge - playerAge <= 5 ? 'close v' : 'higher v';
+                return correctAge - playerAge <= 5 ? 'close v' : 'younger v';
             } else {
-                return playerAge - correctAge <= 5 ? 'close ^' : 'lower ^';
+                return playerAge - correctAge <= 5 ? 'close ^' : 'older ^';
             }
         }
 
