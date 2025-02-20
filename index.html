@@ -54,6 +54,20 @@
             text-overflow: ellipsis; /* Add ellipsis for overflow text */
         }
 
+        .green {
+            background-color: #159643; /* Correct option color */
+        }
+        
+        /* Close option color */
+        .orange {
+            background-color: #b19600; /* Close option color */
+        }
+        
+        /* Wrong option color */
+        .grey {
+            background-color: grey; /* Wrong option color */
+        }
+
         /* Results container styles */
         .results-container {
             width: 80%; /* Set width */
@@ -157,7 +171,7 @@
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
 
-        <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchplayer()">
+        <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchPlayer()">
         <div id="searchResults"></div>
         
         <div id="guessesContainer" class="guess-container" style="margin-top: 40px; margin-bottom: 20px; gap: 20px;">
