@@ -25,6 +25,66 @@
             color: #f4f4f4; /* Heading color */
         }
 
+        .cog-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            color: #f4f4f4;
+            transition: color 0.3s ease;
+        }
+
+        .cog-icon:hover {
+            color: #159643; /* Green on hover */
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #1c1c1c;
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            visibility: hidden; /* Hide initially */
+        }
+
+        .sidebar.open {
+            left: 0;
+            visibility: visible; /* Show when open */
+        }
+
+        .sidebar h2 {
+            color: #f4f4f4;
+            margin-bottom: 20px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #f4f4f4;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         input {
             margin-top: 20px; /* Add top margin */
             padding: 10px; /* Add padding */
@@ -170,6 +230,17 @@
 
     </style>
     <body>
+        <i class="fas fa-cog cog-icon" onclick="toggleSidebar()"></i>
+        <div id="sidebar" class="sidebar">
+            <h2>Settings</h2>
+            <div class="toggle-switch">
+                <span>Regular/Popular</span>
+                <label class="switch">
+                    <input type="checkbox" id="PopularModeToggle" onchange="togglePopularMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
         <div id="correctArtist"></div>
@@ -214,6 +285,7 @@
         <div class="footer-text">Made by u/CATninja58</div>
     </body>
     <script>
+        let Version = "Regular";
         let playerData = [];
         let playerInfo = {};
         let filteredPlayers = [];
@@ -221,9 +293,10 @@
         let guessCount = 0;
         let correct_player = null;
         
-
         function loadCSV() {
-            const csvUrl = "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+            const csvUrl = Version === "Popular" ? 
+                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv" : 
+                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
             fetch(csvUrl)
                 .then(response => response.text())
                 .then(csvText => parseCSV(csvText))
@@ -255,7 +328,7 @@
             const query = document.getElementById("playerSearch").value.toLowerCase();
             const searchResults = document.getElementById("searchResults");
             searchResults.innerHTML = '';
-
+            
             if (query) {
                 const matches = playerData.filter(player => player.player.toLowerCase().includes(query));
                 matches.forEach(match => {
@@ -331,6 +404,8 @@
                 return getHeightRelation(playerValue, correctValue);
             } else if (category === 'weight') {
                 return getWeightRelation(playerValue, correctValue);
+            } else if (category === 'weight') {
+                return getTeamRelation(playerValue, correctValue);
             } else {
                 return 'wrong';
             }
@@ -373,8 +448,13 @@
             if (playerWeight < correctWeight) {
                 return correctWeight - playerWeight <= 20 ? 'close ^' : 'heavier ^'; //within 20 pounds (20 pounds below)
             } else {
-                return playerWeight - correctWeight <= 20 ? 'close v' : 'lighter v'; //within 20 pounds (20 pounds above)
+                return playerWeight - correctWeight <= 20 ? 'close v' : 'Popularer v'; //within 20 pounds (20 pounds above)
             }
+        }
+
+        function getTeamRelation(playerValue, correctValue) {
+            const playerConference = parseInt(playerValue);
+            const correctConference = parseInt(correctValue);
         }
 
         function getButtonColor(relation) {
@@ -410,7 +490,42 @@
             });
         }
 
-        loadCSV();
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+            if (!sidebar.classList.contains('open')) {
+                // Wait for the transition to complete before hiding
+                setTimeout(() => {
+                    sidebar.style.visibility = 'hidden';
+                }, 300); // Match the transition duration
+            } else {
+                sidebar.style.visibility = 'visible';
+            }
+        }
+
+        function togglePopularMode() {
+            const body = document.body;
+            body.classList.toggle('Popular-mode');
+            const isPopularMode = body.classList.contains('Popular-mode');
+            localStorage.setItem('PopularMode', isPopularMode);
+            Version = isPopularMode ? "Popular" : "Regular";
+            loadCSV();
+        }
+
+        function checkPopularModePreference() {
+            const isPopularMode = localStorage.getItem('PopularMode') === 'true';
+            if (isPopularMode) {
+                document.body.classList.add('Popular-mode');
+                document.getElementById('PopularModeToggle').checked = true;
+                Version = "Popular";
+            } else {
+                Version = "Regular";
+            }
+            loadCSV();
+        }
+
+        // Initialize Popular mode preference on page load
+        document.addEventListener('DOMContentLoaded', checkPopularModePreference);
     </script>
 </body>
 </html>
