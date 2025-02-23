@@ -541,6 +541,7 @@
             body.classList.toggle('popular-mode');
             const isPopularMode = body.classList.contains('popular-mode');
             localStorage.setItem('PopularMode', isPopularMode);
+            loadCSV();
         }
 
         function checkPopularModePreference() {
