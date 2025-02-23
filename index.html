@@ -328,8 +328,8 @@
         function loadCSV() {
             const Version = isPopularMode() ? "Popular" : "Normal";
             const csvUrl = Version === "Popular" ? 
-            "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv" : 
-            "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv" : 
+                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
             fetch(csvUrl)
             .then(response => response.text())
             .then(csvText => parseCSV(csvText))
