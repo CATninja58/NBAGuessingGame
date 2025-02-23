@@ -543,7 +543,16 @@
             const isPopularMode = body.classList.contains('Popular-mode');
             localStorage.setItem('PopularMode', isPopularMode);
             Version = isPopularMode ? "Popular" : "Regular";
+            resetGame();
             loadCSV();
+        }
+
+        function resetGame() {
+            document.getElementById("guessesContainer").innerHTML = '';
+            document.getElementById("playerSearch").value = '';
+            document.getElementById("searchResults").innerHTML = '';
+            guesses = [];
+            guessCount = 0;
         }
 
         function checkPopularModePreference() {
