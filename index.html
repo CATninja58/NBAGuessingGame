@@ -25,104 +25,6 @@
             color: #f4f4f4; /* Heading color */
         }
 
-        .cog-icon {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 1000;
-            color: #f4f4f4;
-            transition: color 0.3s ease;
-        }
-
-        .cog-icon:hover {
-            color: #159643; /* Green on hover */
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #1c1c1c;
-            transition: left 0.3s ease;
-            z-index: 999;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            visibility: hidden; /* Hide initially */
-        }
-
-        .sidebar.open {
-            left: 0;
-            visibility: visible; /* Show when open */
-        }
-
-        .sidebar h2 {
-            color: #f4f4f4;
-            margin-bottom: 20px;
-        }
-
-        .toggle-switch {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #f4f4f4;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-        }
-
-        input:checked + .slider {
-            background-color: #2196F3;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
         input {
             margin-top: 20px; /* Add top margin */
             padding: 10px; /* Add padding */
@@ -266,20 +168,111 @@
             color: #f4f4f4; /* Footer text color */
         }
 
+        .cog-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            color: #f4f4f4;
+            transition: color 0.3s ease;
+        }
+
+        .cog-icon:hover {
+            color: #159643; /* Green on hover */
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #1c1c1c;
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            visibility: hidden; /* Hide initially */
+        }
+
+        .sidebar.open {
+            left: 0;
+            visibility: visible; /* Show when open */
+        }
+
+        .sidebar h2 {
+            color: #f4f4f4;
+            margin-bottom: 20px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #f4f4f4;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #159643;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
     </style>
     <body>
         <i class="fas fa-cog cog-icon" onclick="toggleSidebar()"></i>
-        <div id="sidebar" class="sidebar">
+        <div class="sidebar" id="sidebar">
             <h2>Settings</h2>
             <div class="toggle-switch">
-                <span>Regular/Popular</span>
+                <span>Popular Mode</span>
                 <label class="switch">
-                    <input type="checkbox" id="PopularModeToggle" onchange="togglePopularMode()">
+                    <input type="checkbox" id="popularModeToggle" onchange="togglePopularMode()">
                     <span class="slider"></span>
                 </label>
             </div>
         </div>
-
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
         <div id="correctArtist"></div>
@@ -324,7 +317,6 @@
         <div class="footer-text">Made by u/CATninja58</div>
     </body>
     <script>
-        let Version = "Popular";
         let playerData = [];
         let playerInfo = {};
         let filteredPlayers = [];
@@ -332,14 +324,16 @@
         let guessCount = 0;
         let correct_player = null;
         
+
         function loadCSV() {
+            const Version = isPopularMode() ? "Popular" : "Normal";
             const csvUrl = Version === "Popular" ? 
-                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv" : 
-                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+            "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv" : 
+            "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
             fetch(csvUrl)
-                .then(response => response.text())
-                .then(csvText => parseCSV(csvText))
-                .catch(error => console.error("Error loading CSV file:", error));
+            .then(response => response.text())
+            .then(csvText => parseCSV(csvText))
+            .catch(error => console.error("Error loading CSV file:", error));
         }
         
         function parseCSV(csvText) {
@@ -491,6 +485,11 @@
             }
         }
 
+        function getTeamRelation(playerValue, correctValue) {
+            const playerConference = parseInt(playerValue);
+            const correctConference = parseInt(correctValue);
+        }
+
         function getButtonColor(relation) {
             if (relation === 'correct') {
                 return 'green';
@@ -539,36 +538,27 @@
 
         function togglePopularMode() {
             const body = document.body;
-            body.classList.toggle('Popular-mode');
-            const isPopularMode = body.classList.contains('Popular-mode');
+            body.classList.toggle('popular-mode');
+            const isPopularMode = body.classList.contains('popular-mode');
             localStorage.setItem('PopularMode', isPopularMode);
-            Version = isPopularMode ? "Popular" : "Regular";
-            resetGame();
-            loadCSV();
-        }
-
-        function resetGame() {
-            document.getElementById("guessesContainer").innerHTML = '';
-            document.getElementById("playerSearch").value = '';
-            document.getElementById("searchResults").innerHTML = '';
-            guesses = [];
-            guessCount = 0;
         }
 
         function checkPopularModePreference() {
             const isPopularMode = localStorage.getItem('PopularMode') === 'true';
             if (isPopularMode) {
-                document.body.classList.add('Popular-mode');
-                document.getElementById('PopularModeToggle').checked = true;
-                Version = "Popular";
-            } else {
-                Version = "Regular";
+            document.body.classList.add('popular-mode');
+            document.getElementById('popularModeToggle').checked = true;
             }
-            loadCSV();
         }
 
-        // Initialize Popular mode preference on page load
+        function isPopularMode() {
+            return document.body.classList.contains('popular-mode');
+        }
+
+        // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
+
+        loadCSV();
     </script>
 </body>
 </html>
