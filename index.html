@@ -326,17 +326,21 @@
         
 
         function loadCSV() {
-            const isPopular = isPopularMode(); // Now using localStorage-based function
+            const isPopular = isPopularMode(); 
             const csvUrl = isPopular
                 ? "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv"
                 : "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
 
+            console.log("Loading CSV from:", csvUrl); // ✅ Debugging step
+
             fetch(csvUrl)
                 .then(response => response.text())
-                .then(csvText => parseCSV(csvText))
+                .then(csvText => {
+                    console.log("CSV Loaded Successfully"); // ✅ Debugging step
+                    parseCSV(csvText);
+                })
                 .catch(error => console.error("Error loading CSV file:", error));
         }
-
         
         function parseCSV(csvText) {
             const rows = csvText.split("\n");
@@ -346,6 +350,7 @@
                 return { player, number, position, age, height, weight, team, division, conference };
             });
             filteredPlayers = [...playerData];
+            console.log("Correct Player:", length(playerData)); // ✅ Debugging step
             correct_player = playerData[Math.floor(Math.random() * playerData.length)];
             document.getElementById("correctArtist").innerHTML = `Correct Player: ${correct_player.player}`;
             document.getElementById("correctArtistNumber").innerHTML = `Correct Number: ${correct_player.number}`;
