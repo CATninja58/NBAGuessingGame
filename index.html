@@ -289,15 +289,15 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="min-width: 300px;" onclick="sortBy('player')">Player</th>
-                            <th style="min-width: 200px;" onclick="sortBy('number')">Number</th>
-                            <th style="min-width: 250px;" onclick="sortBy('position')">Position</th>
-                            <th style="min-width: 200px;" onclick="sortBy('age')">Age</th>
-                            <th style="min-width: 200px;" onclick="sortBy('height')">Height</th>
-                            <th style="min-width: 200px;" onclick="sortBy('weight')">Weight</th>
-                            <th style="min-width: 200px;" onclick="sortBy('team')">Team</th>
-                            <th style="min-width: 200px;" onclick="sortBy('division')">Division</th>
-                            <th style="min-width: 200px;" onclick="sortBy('conference')">Conference</th>
+                            <th style="min-width: 300px;" onclick="sortBy('player')">Player <span id="player-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('number')">Number <span id="number-arrow"></span></th>
+                            <th style="min-width: 250px;" onclick="sortBy('position')">Position <span id="position-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('age')">Age <span id="age-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('height')">Height <span id="height-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('weight')">Weight <span id="weight-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('team')">Team <span id="team-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('division')">Division <span id="division-arrow"></span></th>
+                            <th style="min-width: 200px;" onclick="sortBy('conference')">Conference <span id="conference-arrow"></span></th>
                         </tr>
                     </thead>
                     <tbody id="playerList"></tbody>
@@ -485,70 +485,75 @@
         }
 
         function sortBy(category) {
-            if (direction === "asc") {
-            direction = "desc";
-            } else {
-            direction = "asc";
+            // Toggle the sorting direction
+            direction = (direction === "asc") ? "desc" : "asc";
+
+            // Update the arrow icons in the header based on direction
+            const arrows = document.querySelectorAll('.arrow');
+            arrows.forEach(arrow => arrow.textContent = ''); // Clear all arrows
+
+            const arrowElement = document.getElementById(`${category}-arrow`);
+            arrowElement.textContent = direction === "asc" ? 'v' : '^';  // Set appropriate arrow
+
+            // Sort based on the category
+            if (category === "number") {
+                filteredPlayers.sort((a, b) => {
+                    const numA = parseInt(a.number);
+                    const numB = parseInt(b.number);
+                    return direction === "asc" ? numA - numB : numB - numA;
+                });
+            } else if (category === "player") {
+                filteredPlayers.sort((a, b) => {
+                    const playerA = a.player.toLowerCase();
+                    const playerB = b.player.toLowerCase();
+                    return direction === "asc" ? playerA.localeCompare(playerB) : playerB.localeCompare(playerA);
+                });
+            } else if (category === "position") {
+                const positionOrder = ["PG", "SG", "SF", "PF", "C"];
+                filteredPlayers.sort((a, b) => {
+                    const posA = positionOrder.indexOf(a.position);
+                    const posB = positionOrder.indexOf(b.position);
+                    return direction === "asc" ? posA - posB : posB - posA;
+                });
+            } else if (category === "age") {
+                filteredPlayers.sort((a, b) => {
+                    const ageA = parseInt(a.age);
+                    const ageB = parseInt(b.age);
+                    return direction === "asc" ? ageA - ageB : ageB - ageA;
+                });
+            } else if (category === "height") {
+                filteredPlayers.sort((a, b) => {
+                    const heightA = a.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                    const heightB = b.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                    return direction === "asc" ? heightA - heightB : heightB - heightA;
+                });
+            } else if (category === "weight") {
+                filteredPlayers.sort((a, b) => {
+                    const weightA = parseInt(a.weight);
+                    const weightB = parseInt(b.weight);
+                    return direction === "asc" ? weightA - weightB : weightB - weightA;
+                });
+            } else if (category === "team") {
+                filteredPlayers.sort((a, b) => {
+                    const teamA = a.team.toLowerCase();
+                    const teamB = b.team.toLowerCase();
+                    return direction === "asc" ? teamA.localeCompare(teamB) : teamB.localeCompare(teamA);
+                });
+            } else if (category === "division") {
+                filteredPlayers.sort((a, b) => {
+                    const divisionA = a.division.toLowerCase();
+                    const divisionB = b.division.toLowerCase();
+                    return direction === "asc" ? divisionA.localeCompare(divisionB) : divisionB.localeCompare(divisionA);
+                });
+            } else if (category === "conference") {
+                filteredPlayers.sort((a, b) => {
+                    const conferenceA = a.conference.toLowerCase();
+                    const conferenceB = b.conference.toLowerCase();
+                    return direction === "asc" ? conferenceA.localeCompare(conferenceB) : conferenceB.localeCompare(conferenceA);
+                });
             }
 
-            
-            if (category === "number") {
-            filteredPlayers.sort((a, b) => {
-                const numA = parseInt(a.number);
-                const numB = parseInt(b.number);
-                return direction === "asc" ? numA - numB : numB - numA;
-            });
-            } else if (category === "player") {
-            filteredPlayers.sort((a, b) => {
-                const playerA = a.player.toLowerCase();
-                const playerB = b.player.toLowerCase();
-                return direction === "asc" ? playerA.localeCompare(playerB) : playerB.localeCompare(playerA);
-            });
-            } else if (category === "position") {
-            const positionOrder = ["PG", "SG", "SF", "PF", "C"];
-            filteredPlayers.sort((a, b) => {
-                const posA = positionOrder.indexOf(a.position);
-                const posB = positionOrder.indexOf(b.position);
-                return direction === "asc" ? posA - posB : posB - posA;
-            });
-            } else if (category === "age") {
-            filteredPlayers.sort((a, b) => {
-                const ageA = parseInt(a.age);
-                const ageB = parseInt(b.age);
-                return direction === "asc" ? ageA - ageB : ageB - ageA;
-            });
-            } else if (category === "height") {
-            filteredPlayers.sort((a, b) => {
-                const heightA = a.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                const heightB = b.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                return direction === "asc" ? heightA - heightB : heightB - heightA;
-            });
-            } else if (category === "weight") {
-            filteredPlayers.sort((a, b) => {
-                const weightA = parseInt(a.weight);
-                const weightB = parseInt(b.weight);
-                return direction === "asc" ? weightA - weightB : weightB - weightA;
-            });
-            } else if (category === "team") {
-            filteredPlayers.sort((a, b) => {
-                const teamA = a.team.toLowerCase();
-                const teamB = b.team.toLowerCase();
-                return direction === "asc" ? teamA.localeCompare(teamB) : teamB.localeCompare(teamA);
-            });
-            } else if (category === "division") {
-            filteredPlayers.sort((a, b) => {
-                const divisionA = a.division.toLowerCase();
-                const divisionB = b.division.toLowerCase();
-                return direction === "asc" ? divisionA.localeCompare(divisionB) : divisionB.localeCompare(divisionA);
-            });
-            } else if (category === "conference") {
-            filteredPlayers.sort((a, b) => {
-                const conferenceA = a.conference.toLowerCase();
-                const conferenceB = b.conference.toLowerCase();
-                return direction === "asc" ? conferenceA.localeCompare(conferenceB) : conferenceB.localeCompare(conferenceA);
-            });
-            }
-            displayPlayers();
+            displayPlayers();  // Update the player list display
         }
 
         function displayPlayers() {
