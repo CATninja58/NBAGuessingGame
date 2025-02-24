@@ -545,14 +545,13 @@
                     const divisionB = b.division.toLowerCase();
                     return direction === "asc" ? divisionA.localeCompare(divisionB) : divisionB.localeCompare(divisionA);
                 });
-            } else if (category === "conference") {
+            } else if (category === "conference"){
                 filteredPlayers.sort((a, b) => {
                     const conferenceA = a.conference.toLowerCase();
                     const conferenceB = b.conference.toLowerCase();
                     return direction === "asc" ? conferenceA.localeCompare(conferenceB) : conferenceB.localeCompare(conferenceA);
                 });
             }
-
             displayPlayers();  // Update the player list display
         }
 
