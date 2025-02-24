@@ -326,15 +326,17 @@
         
 
         function loadCSV() {
-            const Version = isPopularMode() ? "Popular" : "Normal";
-            const csvUrl = Version === "Popular" ? 
-                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv" : 
-                "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+            const isPopular = isPopularMode(); // Now using localStorage-based function
+            const csvUrl = isPopular
+                ? "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPlayersPopular.csv"
+                : "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+
             fetch(csvUrl)
-            .then(response => response.text())
-            .then(csvText => parseCSV(csvText))
-            .catch(error => console.error("Error loading CSV file:", error));
+                .then(response => response.text())
+                .then(csvText => parseCSV(csvText))
+                .catch(error => console.error("Error loading CSV file:", error));
         }
+
         
         function parseCSV(csvText) {
             const rows = csvText.split("\n");
@@ -537,24 +539,33 @@
         }
 
         function togglePopularMode() {
-            const body = document.body;
-            body.classList.toggle('popular-mode');
-            const isPopularMode = body.classList.contains('popular-mode');
-            localStorage.setItem('PopularMode', isPopularMode);
-            loadCSV();
+            const isChecked = document.getElementById('popularModeToggle').checked;
+            if (isChecked) {
+                document.body.classList.add('popular-mode');
+            } else {
+                document.body.classList.remove('popular-mode');
+            }
+            localStorage.setItem('PopularMode', isChecked);
+            loadCSV(); // Reload the correct CSV immediately
         }
 
         function checkPopularModePreference() {
             const isPopularMode = localStorage.getItem('PopularMode') === 'true';
             if (isPopularMode) {
-            document.body.classList.add('popular-mode');
-            document.getElementById('popularModeToggle').checked = true;
+                document.body.classList.add('popular-mode');
+                document.getElementById('popularModeToggle').checked = true;
+            } else {
+                document.body.classList.remove('popular-mode');
+                document.getElementById('popularModeToggle').checked = false;
             }
+            loadCSV(); // Ensure correct CSV is loaded on page refresh
         }
 
+
         function isPopularMode() {
-            return document.body.classList.contains('popular-mode');
+            return localStorage.getItem('PopularMode') === 'true';
         }
+
 
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
