@@ -275,15 +275,6 @@
         </div>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
-        <div id="correctArtist"></div>
-        <div id="correctArtistNumber"></div>
-        <div id="correctArtistPosition"></div>
-        <div id="correctArtistAge"></div>
-        <div id="correctArtistHeight"></div>
-        <div id="correctArtistWeight"></div>
-        <div id="correctArtistTeam"></div>
-        <div id="correctArtistDivision"></div>
-        <div id="correctArtistConference"></div>
 
         <input type="text" id="playerSearch" placeholder="Enter player name" oninput="searchPlayer()">
         <div id="searchResults"></div>
@@ -346,6 +337,7 @@
             });
             filteredPlayers = [...playerData];
             correct_player = playerData[Math.floor(Math.random() * playerData.length)];
+            console.log("Correct Player:", correct_player);
             document.getElementById("correctArtist").innerHTML = `Correct Player: ${correct_player.player}`;
             document.getElementById("correctArtistNumber").innerHTML = `Correct Number: ${correct_player.number}`;
             document.getElementById("correctArtistPosition").innerHTML = `Correct Position: ${correct_player.position}`;
