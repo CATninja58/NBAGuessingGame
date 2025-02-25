@@ -511,9 +511,9 @@
             } else if (category === "position") {
                 const positionOrder = ["PG", "SG", "SF", "PF", "C"];
                 filteredPlayers.sort((a, b) => {
-                    const posA = positionOrder.indexOf(a.position);
-                    const posB = positionOrder.indexOf(b.position);
-                    return direction === "asc" ? posA - posB : posB - posA;
+                    const posA = a.position.toLowerCase();
+                    const posB = b.position.toLowerCase();
+                    return direction === "asc" ? posA.localeCompare(posB) : posB.localeCompare(posA);
                 });
             } else if (category === "age") {
                 filteredPlayers.sort((a, b) => {
@@ -523,9 +523,9 @@
                 });
             } else if (category === "height") {
                 filteredPlayers.sort((a, b) => {
-                    const heightA = a.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                    const heightB = b.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                    return direction === "asc" ? heightA - heightB : heightB - heightA;
+                    const HeightA = a.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+                    const HeightB = b.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+                    return direction === "asc" ? HeightA - HeightB : HeightB - HeightA;
                 });
             } else if (category === "weight") {
                 filteredPlayers.sort((a, b) => {
