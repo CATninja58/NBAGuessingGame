@@ -513,7 +513,6 @@
                 filteredPlayers.sort((a, b) => {
                     return direction === "asc" ? positionOrder.indexOf(a.position) - positionOrder.indexOf(b.position) : positionOrder.indexOf(b.position) - positionOrder.indexOf(a.position);
                 });
-                
             } else if (category === "age") {
                 filteredPlayers.sort((a, b) => {
                     const ageA = parseInt(a.age);
@@ -524,6 +523,8 @@
                 filteredPlayers.sort((a, b) => {
                     const HeightA = a.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
                     const HeightB = b.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+                    console.log(HeightA, HeightB)
+                    console.log(direction === "asc" ? HeightA - HeightB : HeightB - HeightA)
                     return direction === "asc" ? HeightA - HeightB : HeightB - HeightA;
                 });
             } else if (category === "weight") {
