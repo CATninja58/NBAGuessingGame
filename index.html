@@ -521,13 +521,15 @@
                 });
             } else if (category === "height") {
                 filteredPlayers.sort((a, b) => {
-                    const HeightA = a.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
-                    const HeightB = b.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
-                    console.log(HeightA, HeightB)
-                    console.log(direction === "asc" ? HeightA - HeightB : HeightB - HeightA)
-                    return direction === "asc" ? HeightA - HeightB : HeightB - HeightA;
+                    const toInches = (height) => {
+                        if (!height || typeof height !== "string") return 0; // Handle missing or invalid heights
+                        let parts = height.split('-').map(Number);
+                        return parts.length === 2 ? parts[0] * 12 + parts[1] : 0; // Convert to inches
+                    };
+                    return direction === "asc"
+                        ? toInches(a.height) - toInches(b.height)
+                        : toInches(b.height) - toInches(a.height);
                 });
-                console.log(filteredPlayers)
             } else if (category === "weight") {
                 filteredPlayers.sort((a, b) => {
                     const weightA = parseInt(a.weight);
