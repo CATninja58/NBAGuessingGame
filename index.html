@@ -511,7 +511,9 @@
             } else if (category === "position") {
                 const positionOrder = ["PG", "SG", "SF", "PF", "C"];
                 filteredPlayers.sort((a, b) => {
-                    return direction === "asc" ? positionOrder.indexOf(a.position) - positionOrder.indexOf(b.position) : positionOrder.indexOf(b.position) - positionOrder.indexOf(a.position);
+                    const positionA = a.position ? positionOrder.indexOf(a.position) : -1; // Handle missing positions
+                    const positionB = b.position ? positionOrder.indexOf(b.position) : -1; // Handle missing positions
+                    return direction === "asc" ? positionA - positionB : positionB - positionA;
                 });
             } else if (category === "age") {
                 filteredPlayers.sort((a, b) => {
