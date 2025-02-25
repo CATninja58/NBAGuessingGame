@@ -511,10 +511,9 @@
             } else if (category === "position") {
                 const positionOrder = ["PG", "SG", "SF", "PF", "C"];
                 filteredPlayers.sort((a, b) => {
-                    const posA = a.position.toLowerCase();
-                    const posB = b.position.toLowerCase();
-                    return direction === "asc" ? posA.localeCompare(posB) : posB.localeCompare(posA);
+                    return direction === "asc" ? positionOrder.indexOf(a.position) - positionOrder.indexOf(b.position) : positionOrder.indexOf(b.position) - positionOrder.indexOf(a.position);
                 });
+                
             } else if (category === "age") {
                 filteredPlayers.sort((a, b) => {
                     const ageA = parseInt(a.age);
