@@ -527,6 +527,7 @@
                     console.log(direction === "asc" ? HeightA - HeightB : HeightB - HeightA)
                     return direction === "asc" ? HeightA - HeightB : HeightB - HeightA;
                 });
+                console.log(filteredPlayers)
             } else if (category === "weight") {
                 filteredPlayers.sort((a, b) => {
                     const weightA = parseInt(a.weight);
