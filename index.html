@@ -507,14 +507,12 @@
                     }
                     else if (option.includes('close')){
                         if (category === 'number'){
-                            if (option.includes('^')){
-                                return playerValue > correctValue - 15 && playerValue < correctValue + 15;
-                            }
-                            else if (option.includes('v')){
-                                return playerValue < correctValue + 15 && playerValue > correctValue - 15;
-                            }
+                            playerValue === option.includes('^') ? playerValue > correctValue - 15 && playerValue < correctValue + 15 : playerValue < correctValue + 15 && playerValue > correctValue - 15;
+                            console.log(playerValue);
+                            return playerValue
                         }
                         if (category === 'age'){
+
                             if (option.includes('^')){
                                 return playerValue < correctValue + 5 && playerValue > correctValue - 5;
                             }
@@ -707,6 +705,16 @@
             loadCSV(); // Ensure correct CSV is loaded on page refresh
         }
 
+        function checkPossibleModePreference() {
+            const isPossibleMode = localStorage.getItem('PossibleMode') === 'true';
+            if (isPopularMode) {
+                document.body.classList.add('possible-mode');
+                document.getElementById('possibleModeToggle').checked = true;
+            } else {
+                document.body.classList.remove('possible-mode');
+                document.getElementById('possibleModeToggle').checked = false;
+            }
+        }
 
         function isPopularMode() {
             return localStorage.getItem('PopularMode') === 'true';
@@ -719,6 +727,7 @@
 
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
+        document.addEventListener('DOMContentLoaded', checkPossibleModePreference);
 
         loadCSV();
     </script>
