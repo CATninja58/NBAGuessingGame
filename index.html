@@ -491,41 +491,48 @@
         }
 
         function getPossiblePlayers() {
-            filteredPlayersNew = playerData.filter(player => {
+            return playerData.filter(player => {
                 return guesses.every(guess => {
                     const { player: guessedPlayer, selectedOptions } = guess;
+
                     return Object.entries(selectedOptions).every(([category, relation]) => {
-                        const playerValue = player[category];
-                        const correctValue = correct_player[category];
+                        let playerValue = player[category];
+                        let correctValue = correct_player[category];
+
                         console.log(category, ": ", relation);
+
                         const threshold = {
                             number: 15,
                             age: 5,
                             height: 5, // inches
                             weight: 20
                         };
+
                         if (relation === 'correct') {
                             return playerValue === guessedPlayer[category];
+
                         } else if (relation === 'wrong') {
                             return playerValue !== guessedPlayer[category];
-                        } else if (relation.includes('close')){
+
+                        } else if (relation.includes('close')) {
                             if (category === 'height') {
                                 playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
                                 correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
                             }
-                            return playerValue === correctValue ? playerValue < correctValue + threshold[category] && playerValue > correctValue - threshold[category] : playerValue > correctValue - threshold[category] && playerValue < correctValue + threshold[category];
+
+                            return Math.abs(playerValue - correctValue) <= threshold[category];
+
+                        } else if (relation.includes('^')) {
+                            return playerValue > correctValue;
+
+                        } else if (relation.includes('v')) {
+                            return playerValue < correctValue;
                         }
-                        else if (!relation.includes('close')) {
-                            if (relation.includes('^')) {
-                                return playerValue > correctValue;
-                            } else if (relation.includes('v')) {
-                                return playerValue < correctValue;
-                            }
-                        }
+
+                        return false; // Default case to prevent unexpected behavior
                     });
                 });
             });
-            return filteredPlayersNew;
         }
 
         function displayPlayers() {
