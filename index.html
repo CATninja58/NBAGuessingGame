@@ -494,7 +494,6 @@
             filteredPlayersNew = playerData.filter(player => {
                 return guesses.every(guess => {
                     const { player: guessedPlayer, selectedOptions } = guess;
-                    
                     return Object.entries(selectedOptions).every(([category, relation]) => {
                         const playerValue = player[category];
                         const correctValue = correct_player[category];
@@ -513,10 +512,8 @@
                             if (category === 'height') {
                                 playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
                                 correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                            
-                            return playerValue === correctValue ? playerValue < correctValue + threshold[category] && playerValue > correctValue - threshold[category] : playerValue > correctValue - threshold[category] && playerValue < correctValue + threshold[category];
-                            console.log("Player Value: ", playerValue);
                             }
+                            return playerValue === correctValue ? playerValue < correctValue + threshold[category] && playerValue > correctValue - threshold[category] : playerValue > correctValue - threshold[category] && playerValue < correctValue + threshold[category];
                         }
                         else if (!relation.includes('close')) {
                             if (relation.includes('^')) {
