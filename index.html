@@ -491,7 +491,7 @@
         }
 
         function getPossiblePlayers() {
-            filteredPlayersNew = playerData.filter(player => {
+            let filteredPlayersNew = playerData.filter(player => {
                 return guesses.every(guess => {
                     const { player: guessedPlayer, selectedOptions } = guess;
                     
@@ -668,7 +668,6 @@
                 document.body.classList.remove('possible-mode');
             }
             localStorage.setItem('PossibleMode', isChecked);
-            loadCSV(); // Reload the correct CSV immediately
         }
 
         function checkPopularModePreference() {
@@ -680,7 +679,6 @@
                 document.body.classList.remove('popular-mode');
                 document.getElementById('popularModeToggle').checked = false;
             }
-            loadCSV(); // Ensure correct CSV is loaded on page refresh
         }
 
         function checkPossibleModePreference() {
