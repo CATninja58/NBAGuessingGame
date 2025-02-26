@@ -492,68 +492,46 @@
         }
 
         function getPossiblePlayers() {
-            filteredPlayersNew = playerData.filter(artist => {
-            return guesses.every(guess => { //every guess
-                return Object.keys(guess.selectedOptions).every(category => { //every category (number, position, age, height, weight, team, division, conference)
-                    const option = guess.selectedOptions[category]; //relation (correct, close, wrong)
-                    const playerValue = player[category]; //player value
-                    const correctValue = correct_player[category]; //correct value
+            filteredPlayersNew = playerData.filter(player => {
+                return guesses.every(guess => {
+                    const { player: guessedPlayer, selectedOptions } = guess;
                     
-                    if (option === 'correct'){
-                        return playerValue === guess.player[category];
-                    }
-                    else if (option === 'wrong'){
-                        return playerValue !== guess.player[category];
-                    }
-                    else if (option.includes('close')){
-                        if (category === 'number'){
-                            playerValue === option.includes('^') ? playerValue > correctValue - 15 && playerValue < correctValue + 15 : playerValue < correctValue + 15 && playerValue > correctValue - 15;
-                            console.log(playerValue);
-                            return playerValue
-                        }
-                        if (category === 'age'){
+                    return Object.entries(selectedOptions).every(([category, relation]) => {
+                        const playerValue = player[category];
+                        const correctValue = correct_player[category];
+                        
+                        if (relation === 'correct') {
+                            return playerValue === guessedPlayer[category];
+                        } else if (relation === 'wrong') {
+                            return playerValue !== guessedPlayer[category];
+                        } else if (relation.includes('close')) {
+                            if (category === 'number') {
+                                threshold = 15;
+                            } else if (category === 'age') {
+                                threshold = 5;
+                            } else if (category === 'height') {
+                                playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                                correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                                threshold = 5;
+                            } else if (category === 'weight') {
+                                threshold = 20;
+                            }
 
-                            if (option.includes('^')){
-                                return playerValue < correctValue + 5 && playerValue > correctValue - 5;
-                            }
-                            else if (option.includes('v')){
-                                return playerValue > correctValue - 5 && playerValue < correctValue + 5;
-                            }
-                        }
-                        if (category === 'height'){
-                            playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                            correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                            if (option.includes('^')){
-                                return playerValue < correctValue + 5 && playerValue > correctValue - 5;
-                            }
-                            else if (option.includes('v')){
-                                return playerValue > correctValue - 5 && playerValue < correctValue + 5;
+                            return playerValue === correctValue ? playerValue < correctValue + threshold && playerValue > correctValue - threshold : playerValue > correctValue - threshold && playerValue < correctValue + threshold;
+                        
+                        } else if (!relation.includes('close')) {
+                            if (relation.includes('^')) {
+                                return playerValue > correctValue;
+                            } else if (relation.includes('v')) {
+                                return playerValue < correctValue;
                             }
                         }
-                        if (category === 'weight'){
-                            if (option.includes('^')){
-                                return playerValue < correctValue + 20 && playerValue > correctValue - 20;
-                            }
-                            else if (option.includes('v')){
-                                return playerValue > correctValue - 20 && playerValue < correctValue + 20;
-                            }
-                        }
-                    }
-                    else if (!option.includes('close')){
-                        if (option.includes('^')){
-                            return playerValue > correctValue;
-                        }
-                        else if (option.includes('v')){
-                            return playerValue < correctValue;
-                        }
-                    }
-                    
+                    });
                 });
-            })
-        });
-        return filteredPlayersNew;
+            });
+            return filteredPlayersNew;
         }
-
+        
         function displayPlayers() {
             const isPossible = isPossibleMode();
             if(isPossible) {
