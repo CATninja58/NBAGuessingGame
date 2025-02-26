@@ -272,6 +272,13 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <div class="toggle-switch">
+                <span>Show Possible Players</span>
+                <label class="switch">
+                    <input type="checkbox" id="possibleModeToggle" onchange="togglePossibleMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
@@ -484,6 +491,100 @@
             }
         }
 
+        function getPossiblePlayers() {
+            filteredPlayers = playerData.filter(artist => {
+            return guesses.every(guess => { //every guess
+                return Object.keys(guess.selectedOptions).every(category => { //every category (number, position, age, height, weight, team, division, conference)
+                    const option = guess.selectedOptions[category]; //relation (correct, close, wrong)
+                    const playerValue = player[category]; //player value
+                    const correctValue = correct_player[category]; //correct value
+                    
+                    if (option === 'correct'){
+                        return playerValue === guess.player[category];
+                    }
+                    else if (option === 'wrong'){
+                        return playerValue !== guess.player[category];
+                    }
+                    else if (option.includes('close')){
+                        if (category === 'number'){
+                            if (option.includes('^')){
+                                return playerValue > correctValue - 15 && playerValue < correctValue + 15;
+                            }
+                            else if (option.includes('v')){
+                                return playerValue < correctValue + 15 && playerValue > correctValue - 15;
+                            }
+                        }
+                        if (category === 'age'){
+                            if (option.includes('^')){
+                                return playerValue < correctValue + 5 && playerValue > correctValue - 5;
+                            }
+                            else if (option.includes('v')){
+                                return playerValue > correctValue - 5 && playerValue < correctValue + 5;
+                            }
+                        }
+                        if (category === 'height'){
+                            if (option.includes('^')){
+                                return playerValue < correctValue + 5 && playerValue > correctValue - 5;
+                            }
+                            else if (option.includes('v')){
+                                return playerValue > correctValue - 5 && playerValue < correctValue + 5;
+                            }
+                        }
+                        if (category === 'weight'){
+                            if (option.includes('^')){
+                                return playerValue < correctValue + 20 && playerValue > correctValue - 20;
+                            }
+                            else if (option.includes('v')){
+                                return playerValue > correctValue - 20 && playerValue < correctValue + 20;
+                            }
+                        }
+                    }
+                    else if (!option.includes('close')){
+                        if (option.includes('^')){
+                            return playerValue > correctValue;
+                        }
+                        else if (option.includes('v')){
+                            return playerValue < correctValue;
+                        }
+                    }
+                    
+                });
+            })
+        });
+        return filteredPlayers;
+        }
+
+        function displayPlayers() {
+            const isPossible = isPossibleMode();
+            if(isPossible) {
+                let playerList = getPossiblePlayers();
+                
+
+            } else {
+            const playerList = document.getElementById("playerList");
+            playerList.innerHTML = "";
+            }
+
+            filteredPlayers.forEach(player => {
+            const playerItem = document.createElement("tr");
+            
+            playerItem.innerHTML = `
+                <td>${player.player}</td>
+                <td>${player.number}</td>
+                <td>${player.position}</td>
+                <td>${player.age}</td>
+                <td>${player.height}</td>
+                <td>${player.weight}</td>
+                <td>${player.team}</td>
+                <td>${player.division}</td>
+                <td>${player.conference}</td>
+            `;
+
+            playerList.appendChild(playerItem);
+            });
+            
+        }
+
         function sortBy(category) {
             // Toggle the sorting direction
             direction = (direction === "asc") ? "desc" : "asc";
@@ -509,8 +610,6 @@
                     return direction === "asc" ? playerA.localeCompare(playerB) : playerB.localeCompare(playerA);
                 });
             } else if (category === "position") {
-                const positionOrder = ["PG", "SG", "SF", "PF", "C"];
-                
                 filteredPlayers.sort((a, b) => {
                     const positionA = a.position ? a.position.toLowerCase() : ""; // Handle missing team names
                     const positionB = b.position ? b.position.toLowerCase() : ""; // Handle missing team names
@@ -561,29 +660,6 @@
             displayPlayers();  // Update the player list display
         }
 
-        function displayPlayers() {
-            const playerList = document.getElementById("playerList");
-            playerList.innerHTML = "";
-
-            filteredPlayers.forEach(player => {
-            const playerItem = document.createElement("tr");
-            
-            playerItem.innerHTML = `
-                <td>${player.player}</td>
-                <td>${player.number}</td>
-                <td>${player.position}</td>
-                <td>${player.age}</td>
-                <td>${player.height}</td>
-                <td>${player.weight}</td>
-                <td>${player.team}</td>
-                <td>${player.division}</td>
-                <td>${player.conference}</td>
-            `;
-
-            playerList.appendChild(playerItem);
-            });
-        }
-
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('open');
@@ -608,6 +684,17 @@
             loadCSV(); // Reload the correct CSV immediately
         }
 
+        function togglePossibleMode() {
+            const isChecked = document.getElementById('possibleModeToggle').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode');
+            } else {
+                document.body.classList.remove('possible-mode');
+            }
+            localStorage.setItem('PossibleMode', isChecked);
+            loadCSV(); // Reload the correct CSV immediately
+        }
+
         function checkPopularModePreference() {
             const isPopularMode = localStorage.getItem('PopularMode') === 'true';
             if (isPopularMode) {
@@ -623,6 +710,10 @@
 
         function isPopularMode() {
             return localStorage.getItem('PopularMode') === 'true';
+        }
+
+        function isPossibleMode() {
+            return localStorage.getItem('PossibleMode') === 'true';
         }
 
 
