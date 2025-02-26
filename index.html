@@ -328,7 +328,6 @@
             const csvUrl = isPopular
                 ? "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPopularPlayers.csv"
                 : "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
-
             fetch(csvUrl)
                 .then(response => response.text())
                 .then(csvText => parseCSV(csvText))
@@ -531,11 +530,12 @@
             });
             return filteredPlayersNew;
         }
-        
+
         function displayPlayers() {
             const isPossible = isPossibleMode();
             if(isPossible) {
                 const playerList = getPossiblePlayers();
+                console.log("Possible Players:", playerList);
             } else {
             const playerList = document.getElementById("playerList");
             playerList.innerHTML = "";
