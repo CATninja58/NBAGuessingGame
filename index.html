@@ -492,7 +492,7 @@
         }
 
         function getPossiblePlayers() {
-            filteredPlayers = playerData.filter(artist => {
+            filteredPlayersNew = playerData.filter(artist => {
             return guesses.every(guess => { //every guess
                 return Object.keys(guess.selectedOptions).every(category => { //every category (number, position, age, height, weight, team, division, conference)
                     const option = guess.selectedOptions[category]; //relation (correct, close, wrong)
@@ -523,6 +523,8 @@
                             }
                         }
                         if (category === 'height'){
+                            playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                            correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
                             if (option.includes('^')){
                                 return playerValue < correctValue + 5 && playerValue > correctValue - 5;
                             }
@@ -551,15 +553,13 @@
                 });
             })
         });
-        return filteredPlayers;
+        return filteredPlayersNew;
         }
 
         function displayPlayers() {
             const isPossible = isPossibleMode();
             if(isPossible) {
-                let playerList = getPossiblePlayers();
-                
-
+                const playerList = getPossiblePlayers();
             } else {
             const playerList = document.getElementById("playerList");
             playerList.innerHTML = "";
