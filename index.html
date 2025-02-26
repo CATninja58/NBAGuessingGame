@@ -498,7 +498,7 @@
                     return Object.entries(selectedOptions).every(([category, relation]) => {
                         const playerValue = player[category];
                         const correctValue = correct_player[category];
-                        
+                        console.log(category, ": ", relation);
                         if (relation === 'correct') {
                             return playerValue === guessedPlayer[category];
                         } else if (relation === 'wrong') {
@@ -517,7 +517,7 @@
                             }
 
                             return playerValue === correctValue ? playerValue < correctValue + threshold && playerValue > correctValue - threshold : playerValue > correctValue - threshold && playerValue < correctValue + threshold;
-                        
+                        console.log("Player Value: ", playerValue);
                         } else if (!relation.includes('close')) {
                             if (relation.includes('^')) {
                                 return playerValue > correctValue;
