@@ -491,7 +491,7 @@
         }
 
         function getPossiblePlayers() {
-            let filteredPlayersNew = playerData.filter(player => {
+            filteredPlayersNew = playerData.filter(player => {
                 return guesses.every(guess => {
                     const { player: guessedPlayer, selectedOptions } = guess;
                     
@@ -499,26 +499,26 @@
                         const playerValue = player[category];
                         const correctValue = correct_player[category];
                         console.log(category, ": ", relation);
+                        const threshold = {
+                            number: 15,
+                            age: 5,
+                            height: 5, // inches
+                            weight: 20
+                        };
                         if (relation === 'correct') {
                             return playerValue === guessedPlayer[category];
                         } else if (relation === 'wrong') {
                             return playerValue !== guessedPlayer[category];
-                        } else if (relation.includes('close')) {
-                            if (category === 'number') {
-                                threshold = 15;
-                            } else if (category === 'age') {
-                                threshold = 5;
-                            } else if (category === 'height') {
+                        } else if (relation.includes('close')){
+                            if (category === 'height') {
                                 playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
                                 correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                                threshold = 5;
-                            } else if (category === 'weight') {
-                                threshold = 20;
+                            
+                            return playerValue === correctValue ? playerValue < correctValue + threshold[category] && playerValue > correctValue - threshold[category] : playerValue > correctValue - threshold[category] && playerValue < correctValue + threshold[category];
+                            console.log("Player Value: ", playerValue);
                             }
-
-                            return playerValue === correctValue ? playerValue < correctValue + threshold && playerValue > correctValue - threshold : playerValue > correctValue - threshold && playerValue < correctValue + threshold;
-                        console.log("Player Value: ", playerValue);
-                        } else if (!relation.includes('close')) {
+                        }
+                        else if (!relation.includes('close')) {
                             if (relation.includes('^')) {
                                 return playerValue > correctValue;
                             } else if (relation.includes('v')) {
@@ -683,7 +683,7 @@
 
         function checkPossibleModePreference() {
             const isPossibleMode = localStorage.getItem('PossibleMode') === 'true';
-            if (isPopularMode) {
+            if (isPossibleMode) {
                 document.body.classList.add('possible-mode');
                 document.getElementById('possibleModeToggle').checked = true;
             } else {
