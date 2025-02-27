@@ -538,13 +538,14 @@
                 height: 5, // inches
                 weight: 20
             };
-
-            let checkedPlayers = new Set();
+            
+            if (!playerData || !Array.isArray(playerData)) {
+                console.error("Error: playerData is undefined or not an array!");
+                return [];
+            }
 
             let NewfilteredPlayers = playerData.filter(player => {
-                let playerLogged = false;  // Track if we've logged this player in this iteration
-
-                let result = guesses.every(guess => {
+                return guesses.every(guess => {
                     return Object.keys(guess.selectedOptions).every(category => {
                         const option = guess.selectedOptions[category];
                         const playerValue = player[category];
@@ -553,30 +554,19 @@
                         if (playerValue === undefined || guessedValue === undefined) return false;
 
                         if (!option) return true;
-
-                        let passesCheck = false;
-                        if (option === 'correct') {
-                            passesCheck = playerValue === guessedValue;
-                        } else if (option === 'wrong') {
-                            passesCheck = playerValue !== guessedValue;
-                        } else if (['height', 'weight', 'age', 'number'].includes(category)) {
-                            passesCheck = filterOption(option, playerValue, guessedValue, threshold[category]);
-                        } else {
-                            passesCheck = true;
+                        if (option === 'correct') return playerValue === guessedValue;
+                        if (option === 'wrong') return playerValue !== guessedValue;
+                        if (['height', 'weight', 'age', 'number'].includes(category)) {
+                            return filterOption(option, playerValue, guessedValue, threshold[category]);
                         }
-
-                        // Log only if the player hasn't been logged before in this loop
-                        if (!playerLogged) {
-                            console.log(`Checking player ${player.player} | ${category}: ${playerValue} vs ${guessedValue}`);
-                            playerLogged = true;
-                        }
-                        return passesCheck;
+                        return true;
                     });
                 });
-
-                return result;
             });
+
+            return NewfilteredPlayers ?? [];  // Ensure it returns an array
         }
+
 
         function filterOption(option, playerValue, guessValue, threshold) {
             // Convert to float for accuracy
