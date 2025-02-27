@@ -490,6 +490,34 @@
             }
         }
 
+        function filterPlayers() {
+            NewfilteredPlayers = playerData.filter(player => {
+            return guesses.every(guess => {
+                return Object.keys(guess.selectedOptions).every(category => {
+                const option = guess.selectedOptions[category];
+                const playerValue = player[category];
+
+                if (!option) return true;
+
+                if (option === 'correct') {
+                    return playerValue === guess.player[category];
+                } else if (category === 'height') {
+                    return filterOption(option, playerValue, guess.player[category]);
+                } else if (category === 'popularity') {
+                    return filterPopularity(option, playerValue, guess.player[category]);
+                } else if (category === 'country') {
+                    return filterCountry(option, playerValue, guess.player[category]);
+                } else if (option === 'wrong') {
+                    return playerValue !== guess.player[category];
+                } else {
+                    return false;
+                }
+                });
+            });
+            });
+            return NewfilteredPlayers
+        }
+
         function getPossiblePlayers() {
             return playerData.filter(player => {
                 return guesses.every(guess => {
@@ -535,10 +563,26 @@
             });
         }
 
+        function filterOption(option, playerValue, guessValue) {
+            if (option === 'correct') {
+            return playerValue === guessValue;
+            } else if (option.includes('^')) {
+            return parseInt(playerValue) > parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) > threshold;
+            } else if (option.includes('v')) {
+            return parseInt(playerValue) < parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) > threshold;
+            } else if (option === 'close ^') {
+            return parseInt(playerValue) > parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) <= threshold;
+            } else if (option === 'close v') {
+            return parseInt(playerValue) < parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) <= threshold;
+            } else {
+            return false;
+            }
+        }
+
         function displayPlayers() {
             const isPossible = isPossibleMode();
             if(isPossible) {
-                const playerList = getPossiblePlayers();
+                const playerList = filterPlayers();
                 console.log("Possible Players:", playerList);
             } else {
             const playerList = document.getElementById("playerList");
