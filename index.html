@@ -532,40 +532,66 @@
         }
 
         function filterPlayers() {
-            const threshold = {
-                number: 15,
-                age: 5,
-                height: 5, // inches
-                weight: 20
-            };
-            
-            if (!playerData || !Array.isArray(playerData)) {
-                console.error("Error: playerData is undefined or not an array!");
-                return [];
-            }
-
             let NewfilteredPlayers = playerData.filter(player => {
+                // Go through each guess and check if all selectedOptions match the relations
                 return guesses.every(guess => {
+                    // Check each category in the selectedOptions for the current guess
                     return Object.keys(guess.selectedOptions).every(category => {
-                        const option = guess.selectedOptions[category];
+                        const relation = guess.selectedOptions[category];
                         const playerValue = player[category];
-                        const guessedValue = guess.player[category];
+                        const correctValue = correct_player[category];
 
-                        if (playerValue === undefined || guessedValue === undefined) return false;
-
-                        if (!option) return true;
-                        if (option === 'correct') return playerValue === guessedValue;
-                        if (option === 'wrong') return playerValue !== guessedValue;
-                        if (['height', 'weight', 'age', 'number'].includes(category)) {
-                            return filterOption(option, playerValue, guessedValue, threshold[category]);
-                        }
-                        return true;
+                        // Determine if the relation for this category is satisfied for this player
+                        return checkRelation(relation, playerValue, correctValue, category);
                     });
                 });
             });
-
-            return NewfilteredPlayers ?? [];  // Ensure it returns an array
+            return NewfilteredPlayers;
         }
+
+        function checkRelation(relation, playerValue, correctValue, category) {
+            switch (relation) {
+                case 'correct':
+                    return playerValue === correctValue; // Exact match
+                case 'close v':
+                case 'close ^':
+                    return checkCloseRelation(relation, playerValue, correctValue, category);
+                case 'smaller v':
+                case 'larger ^':
+                    return checkSizeDifference(relation, playerValue, correctValue, category);
+                case 'heavier ^':
+                case 'lighter v':
+                    return checkWeightRelation(relation, playerValue, correctValue, category);
+                // Add more cases as needed for other relation types
+                default:
+                    return false; // If no valid relation, consider it not a match
+            }
+        }
+
+        function checkCloseRelation(relation, playerValue, correctValue, category) {
+            if (category === 'age' || category === 'height' || category === 'weight') {
+                const difference = Math.abs(parseInt(playerValue) - parseInt(correctValue));
+                return (relation === 'close ^' && difference <= 5) || (relation === 'close v' && difference <= 5);
+            }
+            return false;
+        }
+
+        function checkSizeDifference(relation, playerValue, correctValue, category) {
+            if (category === 'number') {
+                const difference = Math.abs(parseInt(playerValue) - parseInt(correctValue));
+                return (relation === 'smaller v' && difference > 15) || (relation === 'larger ^' && difference > 15);
+            }
+            return false;
+        }
+
+        function checkWeightRelation(relation, playerValue, correctValue, category) {
+            if (category === 'weight') {
+                const difference = Math.abs(parseInt(playerValue) - parseInt(correctValue));
+                return (relation === 'heavier ^' && difference <= 20) || (relation === 'lighter v' && difference <= 20);
+            }
+            return false;
+        }
+
 
 
         function filterOption(option, playerValue, guessValue, threshold) {
