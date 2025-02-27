@@ -582,14 +582,15 @@
         function displayPlayers() {
             const isPossible = isPossibleMode();
             if(isPossible) {
-                const playerList = filterPlayers();
-                console.log("Possible Players:", playerList);
+                const NewfilteredPlayers = filterPlayers();
+                console.log("Possible Players:", NewfilteredPlayers);
             } else {
+                NewfilteredPlayers = playerData;
+            }
             const playerList = document.getElementById("playerList");
             playerList.innerHTML = "";
-            }
 
-            filteredPlayers.forEach(player => {
+            NewfilteredPlayers.forEach(player => {
             const playerItem = document.createElement("tr");
             
             playerItem.innerHTML = `
@@ -606,7 +607,6 @@
 
             playerList.appendChild(playerItem);
             });
-            
         }
 
         function sortBy(category) {
