@@ -539,38 +539,43 @@
                 weight: 20
             };
 
+            let checkedPlayers = new Set();
+
             let NewfilteredPlayers = playerData.filter(player => {
-                return guesses.every(guess => {
+                let playerLogged = false;  // Track if we've logged this player in this iteration
+
+                let result = guesses.every(guess => {
                     return Object.keys(guess.selectedOptions).every(category => {
                         const option = guess.selectedOptions[category];
                         const playerValue = player[category];
                         const guessedValue = guess.player[category];
 
-                        // Check if values exist before comparing
                         if (playerValue === undefined || guessedValue === undefined) return false;
 
-                        if (!option){ 
-                        console.log("!option");
-                        return true;
+                        if (!option) return true;
+
+                        let passesCheck = false;
+                        if (option === 'correct') {
+                            passesCheck = playerValue === guessedValue;
+                        } else if (option === 'wrong') {
+                            passesCheck = playerValue !== guessedValue;
+                        } else if (['height', 'weight', 'age', 'number'].includes(category)) {
+                            passesCheck = filterOption(option, playerValue, guessedValue, threshold[category]);
+                        } else {
+                            passesCheck = true;
                         }
 
-                        if (option === 'correct') {
-                            console.log("Correct! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
-                            return playerValue === guessedValue;
-                        } else if (option === 'wrong') {
-                            console.log("Wrong! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
-                            return playerValue !== guessedValue;
-                        } else if (['height', 'weight', 'age', 'number'].includes(category)) {
-                            console.log("Close! PlayerVal: " + playerValue + "GuessVal: " + guessedValue + "Category: " + category);
-                            return filterOption(option, playerValue, guessedValue, threshold[category]);
-                        } else {
-                            console.log("Defult");
-                            return true;
+                        // Log only if the player hasn't been logged before in this loop
+                        if (!playerLogged) {
+                            console.log(`Checking player ${player.player} | ${category}: ${playerValue} vs ${guessedValue}`);
+                            playerLogged = true;
                         }
+                        return passesCheck;
                     });
                 });
+
+                return result;
             });
-            return NewfilteredPlayers;
         }
 
         function filterOption(option, playerValue, guessValue, threshold) {
@@ -579,8 +584,8 @@
             const guessNum = parseFloat(guessValue);
             
             if (option === 'height') {
-                const playerNum = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                const guessNum = guessValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                playerNum = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                guessNum = guessValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
             }
             
             if (isNaN(playerNum) || isNaN(guessNum)){
@@ -610,7 +615,7 @@
             const isPossible = isPossibleMode();
             let NewfilteredPlayers = [];
             if(isPossible) {
-                NewfilteredPlayers = getPossiblePlayers();
+                NewfilteredPlayers = filterPlayers();
                 console.log("Possible Players:", NewfilteredPlayers);
             } else {
                 NewfilteredPlayers = playerData;
