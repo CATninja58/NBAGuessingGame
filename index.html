@@ -501,16 +501,12 @@
 
                 if (option === 'correct') {
                     return playerValue === guess.player[category];
-                } else if (category === 'height') {
-                    return filterOption(option, playerValue, guess.player[category]);
-                } else if (category === 'popularity') {
-                    return filterPopularity(option, playerValue, guess.player[category]);
-                } else if (category === 'country') {
-                    return filterCountry(option, playerValue, guess.player[category]);
                 } else if (option === 'wrong') {
                     return playerValue !== guess.player[category];
+                } else if (category === 'height') {
+                    filterCountry(option, playerValue, guess.player[category]);
                 } else {
-                    return false;
+                    return
                 }
                 });
             });
@@ -581,8 +577,9 @@
 
         function displayPlayers() {
             const isPossible = isPossibleMode();
+            let NewfilteredPlayers = [];
             if(isPossible) {
-                const NewfilteredPlayers = filterPlayers();
+                NewfilteredPlayers = filterPlayers();
                 console.log("Possible Players:", NewfilteredPlayers);
             } else {
                 NewfilteredPlayers = playerData;
