@@ -262,7 +262,6 @@
 
     </style>
     <body>
-        <i class="fas fa-cog cog-icon" onclick="toggleSidebar()"></i>
         <div class="sidebar" id="sidebar">
             <h2>Settings</h2>
             <div class="toggle-switch">
@@ -328,6 +327,7 @@
             const csvUrl = isPopular
                 ? "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAPopularPlayers.csv"
                 : "https://raw.githubusercontent.com/CATninja58/NBAGuessingGame/main/NBAplayers.csv";
+
             fetch(csvUrl)
                 .then(response => response.text())
                 .then(csvText => parseCSV(csvText))
@@ -490,174 +490,6 @@
             }
         }
 
-        function getPossiblePlayers() {
-            const threshold = {
-                number: 15,
-                age: 5,
-                height: 5, // inches
-                weight: 20
-            };
-            return playerData.filter(player => {
-                return guesses.every(guess => {
-                    const { player: guessedPlayer, selectedOptions } = guess;
-                    return Object.entries(selectedOptions).every(([category, relation]) => {
-                        const option = relation;
-                        const playerValue = player[category];
-                        const guessedValue = guess.player[category];
-                        
-                        // Check if values exist before comparing
-                        if (playerValue === undefined || guessedValue === undefined) return false;
-
-                        if (!option){ 
-                        console.log("!option");
-                        return true;
-                        }
-
-                        if (option === 'correct') {
-                            console.log("Correct! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
-                            return playerValue === guessedValue;
-                        } else if (option === 'wrong') {
-                            console.log("Wrong! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
-                            return playerValue !== guessedValue;
-                        } else if (['height', 'weight', 'age', 'number'].includes(category)) {
-                            console.log("Close! PlayerVal: " + playerValue + "GuessVal: " + guessedValue + "Category: " + category);
-                            return filterOption(option, playerValue, guessedValue, threshold[category]);
-                        } else {
-                            console.log("Defult");
-                            return true;
-                        }
-                    });
-                });
-            });
-        }
-
-        function filterPlayers() {
-            let NewfilteredPlayers = playerData.filter(player => {
-                // Go through each guess and check if all selectedOptions match the relations
-                return guesses.every(guess => {
-                    // Check each category in the selectedOptions for the current guess
-                    return Object.keys(guess.selectedOptions).every(category => {
-                        const relation = guess.selectedOptions[category];
-                        const playerValue = player[category];
-                        const correctValue = correct_player[category];
-
-                        // Determine if the relation for this category is satisfied for this player
-                        return checkRelation(relation, playerValue, correctValue, category);
-                    });
-                });
-            });
-            return NewfilteredPlayers;
-        }
-
-        function checkRelation(relation, playerValue, correctValue, category) {
-            switch (relation) {
-                case 'correct':
-                    return playerValue === correctValue; // Exact match
-                case 'close v':
-                case 'close ^':
-                    return checkCloseRelation(relation, playerValue, correctValue, category);
-                case 'smaller v':
-                case 'larger ^':
-                    return checkSizeDifference(relation, playerValue, correctValue, category);
-                case 'heavier ^':
-                case 'lighter v':
-                    return checkWeightRelation(relation, playerValue, correctValue, category);
-                // Add more cases as needed for other relation types
-                default:
-                    return false; // If no valid relation, consider it not a match
-            }
-        }
-
-        function checkCloseRelation(relation, playerValue, correctValue, category) {
-            if (category === 'age' || category === 'height' || category === 'weight') {
-                const difference = Math.abs(parseInt(playerValue) - parseInt(correctValue));
-                return (relation === 'close ^' && difference <= 5) || (relation === 'close v' && difference <= 5);
-            }
-            return false;
-        }
-
-        function checkSizeDifference(relation, playerValue, correctValue, category) {
-            if (category === 'number') {
-                const difference = Math.abs(parseInt(playerValue) - parseInt(correctValue));
-                return (relation === 'smaller v' && difference > 15) || (relation === 'larger ^' && difference > 15);
-            }
-            return false;
-        }
-
-        function checkWeightRelation(relation, playerValue, correctValue, category) {
-            if (category === 'weight') {
-                const difference = Math.abs(parseInt(playerValue) - parseInt(correctValue));
-                return (relation === 'heavier ^' && difference <= 20) || (relation === 'lighter v' && difference <= 20);
-            }
-            return false;
-        }
-
-
-
-        function filterOption(option, playerValue, guessValue, threshold) {
-            // Convert to float for accuracy
-            const playerNum = parseFloat(playerValue);
-            const guessNum = parseFloat(guessValue);
-            
-            if (option === 'height') {
-                playerNum = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                guessNum = guessValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-            }
-            
-            if (isNaN(playerNum) || isNaN(guessNum)){
-                console.log("Invalid number");
-                console.log("Player Number:", playerNum);
-                console.log("Guess Number:", guessNum);
-                return false;
-            }  
-
-            if (option === 'correct') {
-                return playerNum === guessNum;
-            } else if (option === 'close ^') {
-                return playerNum > guessNum && Math.abs(playerNum - guessNum) <= threshold;
-            } else if (option === 'close v') {
-                return playerNum < guessNum && Math.abs(playerNum - guessNum) <= threshold;
-            } else if (option.includes('^')) {
-                return playerNum > guessNum && Math.abs(playerNum - guessNum) > threshold;
-            } else if (option.includes('v')) {
-                return playerNum < guessNum && Math.abs(playerNum - guessNum) > threshold;
-            } else {
-                return false;
-            }
-        }
-
-
-        function displayPlayers() {
-            const isPossible = isPossibleMode();
-            let NewfilteredPlayers = [];
-            if(isPossible) {
-                NewfilteredPlayers = filterPlayers();
-                console.log("Possible Players:", NewfilteredPlayers);
-            } else {
-                NewfilteredPlayers = playerData;
-            }
-            const playerList = document.getElementById("playerList");
-            playerList.innerHTML = "";
-
-            NewfilteredPlayers.forEach(player => {
-            const playerItem = document.createElement("tr");
-            
-            playerItem.innerHTML = `
-                <td>${player.player}</td>
-                <td>${player.number}</td>
-                <td>${player.position}</td>
-                <td>${player.age}</td>
-                <td>${player.height}</td>
-                <td>${player.weight}</td>
-                <td>${player.team}</td>
-                <td>${player.division}</td>
-                <td>${player.conference}</td>
-            `;
-
-            playerList.appendChild(playerItem);
-            });
-        }
-
         function sortBy(category) {
             // Toggle the sorting direction
             direction = (direction === "asc") ? "desc" : "asc";
@@ -733,6 +565,45 @@
             displayPlayers();  // Update the player list display
         }
 
+        function filterPlayers() {
+            const filteredPlayers = playerData.filter(player => {
+                const playerInfo = guesses[guesses.length - 1].player;
+                return player.player === playerInfo.player;
+            });
+            return filteredPlayers;
+        }
+        
+        function displayPlayers() {
+            const isPossible = isPossibleMode();
+            let NewfilteredPlayers = [];
+            if(isPossible) {
+                NewfilteredPlayers = filterPlayers();
+                console.log("Possible Players:", NewfilteredPlayers);
+            } else {
+                NewfilteredPlayers = playerData;
+            }
+            const playerList = document.getElementById("playerList");
+            playerList.innerHTML = "";
+
+            NewfilteredPlayers.forEach(player => {
+            const playerItem = document.createElement("tr");
+            
+            playerItem.innerHTML = `
+                <td>${player.player}</td>
+                <td>${player.number}</td>
+                <td>${player.position}</td>
+                <td>${player.age}</td>
+                <td>${player.height}</td>
+                <td>${player.weight}</td>
+                <td>${player.team}</td>
+                <td>${player.division}</td>
+                <td>${player.conference}</td>
+            `;
+
+            playerList.appendChild(playerItem);
+            });
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('open');
@@ -777,6 +648,7 @@
                 document.body.classList.remove('popular-mode');
                 document.getElementById('popularModeToggle').checked = false;
             }
+            loadCSV(); // Ensure correct CSV is loaded on page refresh
         }
 
         function checkPossibleModePreference() {
@@ -799,10 +671,8 @@
             return localStorage.getItem('PossibleMode') === 'true';
         }
 
-
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
-        document.addEventListener('DOMContentLoaded', checkPossibleModePreference);
 
         loadCSV();
     </script>
