@@ -556,16 +556,16 @@
                         if (!option){ 
                         console.log("!option") 
                         return true;
+                        }
 
-                    }
                         if (option === 'correct') {
-                            console.log("Correct")
+                            console.log("Correct! PlayerVal: " + playerValue + "GuessVal: " + guessedValue)
                             return playerValue === guessedValue;
                         } else if (option === 'wrong') {
-                            console.log("Wrong")
+                            console.log("Wrong! PlayerVal: " + playerValue + "GuessVal: " + guessedValue)
                             return playerValue !== guessedValue;
                         } else if (['height', 'weight', 'age', 'number'].includes(category)) {
-                            console.log("close")
+                            console.log("Close! PlayerVal: " + playerValue + "GuessVal: " + guessedValue + "Category: " + category)
                             return filterOption(option, playerValue, guessedValue, threshold[category]);
                         } else {
                             console.log("Defult")
