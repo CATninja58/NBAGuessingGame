@@ -279,6 +279,66 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            
+                <div class="sidebar" id="sidebar">
+                    <h2>Possible Mode Settings</h2>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleNumber" onchange="togglePossibleModeNumber()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeTogglePosition" onchange="togglePossibleModePosition()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleAge" onchange="togglePossibleModeAge()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleHeight" onchange="togglePossibleModeHeight()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleWeight" onchange="togglePossibleModeWeight()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleTeam" onchange="togglePossibleModeTeam()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleDiv" onchange="togglePossibleModeDiv()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <span>Number</span>
+                        <label class="switch">
+                            <input type="checkbox" id="possibleModeToggleConference" onchange="togglePossibleModeConference()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
         </div>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
@@ -570,7 +630,7 @@
             const filteredPlayers = playerData.filter(player => {
                 return guesses.every(guess => {
                     return Object.entries(guess.selectedOptions).every(([category, relation]) => {
-                        if (category === 'age') {
+                        if (category === 'age' && checkPossibleModeToggledSettings('age')) {
                             // Extract the player and correct player's ages
                             const playerAge = parseInt(player.age);
                             const correctAge = parseInt(correct_player.age);
@@ -589,7 +649,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'height') {
+                        else if (category === 'height' && checkPossibleModeToggledSettings('height')) {
                             // Extract the player and correct player's heights
                             const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
                             const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
@@ -608,7 +668,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'weight') {
+                        else if (category === 'weight' && checkPossibleModeToggledSettings('weight')) {
                             // Extract the player and correct player's weights
                             const playerWeight = parseInt(player.weight);
                             const correctWeight = parseInt(correct_player.weight);
@@ -627,7 +687,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'number') {
+                        else if (category === 'number' && checkPossibleModeToggledSettings('number')) {
                             // Extract the player and correct player's numbers
                             const playerNumber = parseInt(player.number);
                             const correctNumber = parseInt(correct_player.number);
@@ -646,7 +706,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'team') {
+                        else if (category === 'team', checkPossibleModeToggledSettings('team')) {
                             // Extract the player and correct player's teams
                             const playerTeam = player.team.toLowerCase();
                             const correctTeam = correct_player.team.toLowerCase();
@@ -657,7 +717,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'position') {
+                        else if (category === 'position' && checkPossibleModeToggledSettings('position')) {
                             // Extract the player and correct player's positions
                             const playerPosition = player.position.toLowerCase();
                             const correctPosition = correct_player.position.toLowerCase();
@@ -668,7 +728,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'division') {
+                        else if (category === 'division' && checkPossibleModeToggledSettings('division')) {
                             // Extract the player and correct player's divisions
                             const playerDivision = player.division.toLowerCase();
                             const correctDivision = correct_player.division.toLowerCase();
@@ -679,7 +739,7 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        if (category === 'conference') {
+                        else if (category === 'conference' && checkPossibleModeToggledSettings('conference')) {
                             // Extract the player and correct player's conferences
                             const playerConference = player.conference.toLowerCase();
                             const correctConference = correct_player.conference.toLowerCase();
@@ -690,8 +750,6 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
-                        // Add additional conditions for other categories (number, position, height, etc.)
-                        return true; // For now, returning true for other categories
                     });
                 });
             });
@@ -795,6 +853,92 @@
 
         function isPossibleMode() {
             return localStorage.getItem('PossibleMode') === 'true';
+        }
+
+        //==============================================================Possible mode settings 
+        function togglePossibleModeNumber() {
+            const isChecked = document.getElementById('possibleModeToggleNumber').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-number');
+            } else {
+                document.body.classList.remove('possible-mode-number');
+            }
+            localStorage.setItem('PossibleModeNumber', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModePosition() {
+            const isChecked = document.getElementById('possibleModeTogglePosition').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-position');
+            } else {
+                document.body.classList.remove('possible-mode-position');
+            }
+            localStorage.setItem('PossibleModePosition', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModeAge() {
+            const isChecked = document.getElementById('possibleModeToggleAge').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-age');
+            } else {
+                document.body.classList.remove('possible-mode-age');
+            }
+            localStorage.setItem('PossibleModeAge', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModeHeight() {
+            const isChecked = document.getElementById('possibleModeToggleHeight').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-height');
+            } else {
+                document.body.classList.remove('possible-mode-height');
+            }
+            localStorage.setItem('PossibleModeHeight', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModeWeight() {
+            const isChecked = document.getElementById('possibleModeToggleWeight').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-weight');
+            } else {
+                document.body.classList.remove('possible-mode-weight');
+            }
+            localStorage.setItem('PossibleModeWeight', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModeTeam() {
+            const isChecked = document.getElementById('possibleModeToggleTeam').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-team');
+            } else {
+                document.body.classList.remove('possible-mode-team');
+            }
+            localStorage.setItem('PossibleModeTeam', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModeDiv() {
+            const isChecked = document.getElementById('possibleModeToggleDiv').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-div');
+            } else {
+                document.body.classList.remove('possible-mode-div');
+            }
+            localStorage.setItem('PossibleModeDiv', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+        function togglePossibleModeConference() {
+            const isChecked = document.getElementById('possibleModeToggleConference').checked;
+            if (isChecked) {
+                document.body.classList.add('possible-mode-conference');
+            } else {
+                document.body.classList.remove('possible-mode-conference');
+            }
+            localStorage.setItem('PossibleModeConference', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+
+        function checkPossibleModeToggledSettings(option){
+            return localStorage.getItem('PossibleMode' + option) === 'true';
         }
 
         // Initialize popular mode preference on page load
