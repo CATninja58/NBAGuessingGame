@@ -491,45 +491,41 @@
         }
 
         function getPossiblePlayers() {
+            const threshold = {
+                number: 15,
+                age: 5,
+                height: 5, // inches
+                weight: 20
+            };
             return playerData.filter(player => {
                 return guesses.every(guess => {
                     const { player: guessedPlayer, selectedOptions } = guess;
-
                     return Object.entries(selectedOptions).every(([category, relation]) => {
-                        let playerValue = player[category];
-                        let correctValue = correct_player[category];
+                        const option = relation;
+                        const playerValue = player[category];
+                        const guessedValue = guess.player[category];
+                        
+                        // Check if values exist before comparing
+                        if (playerValue === undefined || guessedValue === undefined) return false;
 
-                        console.log(category, ": ", relation);
-
-                        const threshold = {
-                            number: 15,
-                            age: 5,
-                            height: 5, // inches
-                            weight: 20
-                        };
-
-                        if (relation === 'correct') {
-                            return playerValue === guessedPlayer[category];
-
-                        } else if (relation === 'wrong') {
-                            return playerValue !== guessedPlayer[category];
-
-                        } else if (relation.includes('close')) {
-                            if (category === 'height') {
-                                playerValue = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                                correctValue = correctValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                            }
-
-                            return Math.abs(playerValue - correctValue) <= threshold[category];
-
-                        } else if (relation.includes('^')) {
-                            return playerValue > correctValue;
-
-                        } else if (relation.includes('v')) {
-                            return playerValue < correctValue;
+                        if (!option){ 
+                        console.log("!option");
+                        return true;
                         }
 
-                        return false; // Default case to prevent unexpected behavior
+                        if (option === 'correct') {
+                            console.log("Correct! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
+                            return playerValue === guessedValue;
+                        } else if (option === 'wrong') {
+                            console.log("Wrong! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
+                            return playerValue !== guessedValue;
+                        } else if (['height', 'weight', 'age', 'number'].includes(category)) {
+                            console.log("Close! PlayerVal: " + playerValue + "GuessVal: " + guessedValue + "Category: " + category);
+                            return filterOption(option, playerValue, guessedValue, threshold[category]);
+                        } else {
+                            console.log("Defult");
+                            return true;
+                        }
                     });
                 });
             });
@@ -554,21 +550,21 @@
                         if (playerValue === undefined || guessedValue === undefined) return false;
 
                         if (!option){ 
-                        console.log("!option") 
+                        console.log("!option");
                         return true;
                         }
 
                         if (option === 'correct') {
-                            console.log("Correct! PlayerVal: " + playerValue + "GuessVal: " + guessedValue)
+                            console.log("Correct! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
                             return playerValue === guessedValue;
                         } else if (option === 'wrong') {
-                            console.log("Wrong! PlayerVal: " + playerValue + "GuessVal: " + guessedValue)
+                            console.log("Wrong! PlayerVal: " + playerValue + "GuessVal: " + guessedValue);
                             return playerValue !== guessedValue;
                         } else if (['height', 'weight', 'age', 'number'].includes(category)) {
-                            console.log("Close! PlayerVal: " + playerValue + "GuessVal: " + guessedValue + "Category: " + category)
+                            console.log("Close! PlayerVal: " + playerValue + "GuessVal: " + guessedValue + "Category: " + category);
                             return filterOption(option, playerValue, guessedValue, threshold[category]);
                         } else {
-                            console.log("Defult")
+                            console.log("Defult");
                             return true;
                         }
                     });
@@ -592,7 +588,7 @@
                 console.log("Player Number:", playerNum);
                 console.log("Guess Number:", guessNum);
                 return false;
-            } 
+            }  
 
             if (option === 'correct') {
                 return playerNum === guessNum;
@@ -614,7 +610,7 @@
             const isPossible = isPossibleMode();
             let NewfilteredPlayers = [];
             if(isPossible) {
-                NewfilteredPlayers = filterPlayers();
+                NewfilteredPlayers = getPossiblePlayers();
                 console.log("Possible Players:", NewfilteredPlayers);
             } else {
                 NewfilteredPlayers = playerData;
