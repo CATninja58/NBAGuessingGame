@@ -571,14 +571,15 @@
         }
 
         function filterOption(option, playerValue, guessValue, threshold) {
+            // Convert to float for accuracy
+            const playerNum = parseFloat(playerValue);
+            const guessNum = parseFloat(guessValue);
+            
             if (option === 'height') {
                 const playerNum = playerValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
                 const guessNum = guessValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
             }
-            else { // Convert to float for accuracy
-            const playerNum = parseFloat(playerValue);
-            const guessNum = parseFloat(guessValue);
-            }
+            
             if (isNaN(playerNum) || isNaN(guessNum)) return false; // Ensure valid numbers
 
             if (option === 'correct') {
