@@ -568,8 +568,13 @@
 
         function filterPlayers() {
             const filteredPlayers = playerData.filter(player => {
-                const playerInfo = guesses[guesses.length - 1].player;
-                return player.player === playerInfo.player;
+                return guesses.every(guess => {
+                    const playerInfo = guess.player;
+                    return Object.keys(guess.selectedOptions).every(category => {
+                        const relation = guess.selectedOptions[category];
+                        return getRelation(category, playerInfo[category], correct_player[category]) === relation;
+                    });
+                });
             });
             return filteredPlayers;
         }
