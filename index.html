@@ -580,7 +580,12 @@
                 const guessNum = guessValue.split('-').map(Number).reduce((a, b) => a * 12 + b);
             }
             
-            if (isNaN(playerNum) || isNaN(guessNum)) return false; // Ensure valid numbers
+            if (isNaN(playerNum) || isNaN(guessNum)){
+                console.log("Invalid number");
+                console.log("Player Number:", playerNum);
+                console.log("Guess Number:", guessNum);
+                return false;
+            } 
 
             if (option === 'correct') {
                 return playerNum === guessNum;
