@@ -260,6 +260,15 @@
             transform: translateX(26px);
         }
 
+        #possibleModeSettings {
+            display: none;
+            padding-left: 20px; /* Add left padding to indent it */
+        }
+
+        #possibleModeSettings span {
+            padding-right: 10px; /* Slight padding to the right to make it visually inside possible mode */
+        }
+
     </style>
     <body>
         <i class="fas fa-cog cog-icon" onclick="toggleSidebar()"></i>
@@ -280,65 +289,66 @@
                 </label>
             </div>
             
-                <div class="sidebar" id="sidebar">
-                    <h2>Possible Mode Settings</h2>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleNumber" onchange="togglePossibleModeNumber()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeTogglePosition" onchange="togglePossibleModePosition()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleAge" onchange="togglePossibleModeAge()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleHeight" onchange="togglePossibleModeHeight()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleWeight" onchange="togglePossibleModeWeight()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleTeam" onchange="togglePossibleModeTeam()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleDiv" onchange="togglePossibleModeDiv()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-switch">
-                        <span>Number</span>
-                        <label class="switch">
-                            <input type="checkbox" id="possibleModeToggleConference" onchange="togglePossibleModeConference()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
+            <div class="IDK" id="possibleModeSettings">
+                <span>Possible Mode Settings</span>
+                
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleNumber" onchange="togglePossibleModeNumber()">
+                        <span class="slider"></span>
+                    </label>
                 </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeTogglePosition" onchange="togglePossibleModePosition()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleAge" onchange="togglePossibleModeAge()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleHeight" onchange="togglePossibleModeHeight()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleWeight" onchange="togglePossibleModeWeight()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleTeam" onchange="togglePossibleModeTeam()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleDiv" onchange="togglePossibleModeDiv()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <span>Number</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleConference" onchange="togglePossibleModeConference()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
         </div>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
@@ -814,6 +824,12 @@
 
         function togglePossibleMode() {
             const isChecked = document.getElementById('possibleModeToggle').checked;
+            const possibleModeSettings = document.getElementById('possibleModeSettings');
+            if (possibleModeToggle.checked) {
+                possibleModeSettings.style.display = 'block';
+            } else {
+                possibleModeSettings.style.display = 'none';
+            }
             if (isChecked) {
                 document.body.classList.add('possible-mode');
             } else {
@@ -943,6 +959,7 @@
 
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
+        document.addEventListener('DOMContentLoaded', checkPossibleModePreference);
 
         loadCSV();
     </script>
