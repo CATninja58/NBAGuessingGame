@@ -589,6 +589,107 @@
                                 return true; // For other relations, assume it's valid unless specified
                             }
                         }
+                        if (category === 'height') {
+                            // Extract the player and correct player's heights
+                            const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+                            const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+
+                            if (relation === 'shorter v') {
+                                return playerHeight < correctHeight;
+                            } else if (relation === 'taller ^') {
+                                return playerHeight > correctHeight;
+                            } else if (relation === 'close ^') {
+                                return Math.abs(playerHeight - correctHeight) <= 5;
+                            } else if (relation === 'close v') {
+                                return Math.abs(playerHeight - correctHeight) <= 5;
+                            } else if (relation === 'correct') {
+                                return playerHeight === correctHeight;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        if (category === 'weight') {
+                            // Extract the player and correct player's weights
+                            const playerWeight = parseInt(player.weight);
+                            const correctWeight = parseInt(correct_player.weight);
+
+                            if (relation === 'lighter v') {
+                                return playerWeight < correctWeight;
+                            } else if (relation === 'heavier ^') {
+                                return playerWeight > correctWeight;
+                            } else if (relation === 'close ^') {
+                                return Math.abs(playerWeight - correctWeight) <= 20;
+                            } else if (relation === 'close v') {
+                                return Math.abs(playerWeight - correctWeight) <= 20;
+                            } else if (relation === 'correct') {
+                                return playerWeight === correctWeight;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        if (category === 'number') {
+                            // Extract the player and correct player's numbers
+                            const playerNumber = parseInt(player.number);
+                            const correctNumber = parseInt(correct_player.number);
+
+                            if (relation === 'smaller v') {
+                                return playerNumber < correctNumber;
+                            } else if (relation === 'larger ^') {
+                                return playerNumber > correctNumber;
+                            } else if (relation === 'close ^') {
+                                return Math.abs(playerNumber - correctNumber) <= 15;
+                            } else if (relation === 'close v') {
+                                return Math.abs(playerNumber - correctNumber) <= 15;
+                            } else if (relation === 'correct') {
+                                return playerNumber === correctNumber;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        if (category === 'team') {
+                            // Extract the player and correct player's teams
+                            const playerTeam = player.team.toLowerCase();
+                            const correctTeam = correct_player.team.toLowerCase();
+
+                            if (relation === 'correct') {
+                                return playerTeam === correctTeam;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        if (category === 'position') {
+                            // Extract the player and correct player's positions
+                            const playerPosition = player.position.toLowerCase();
+                            const correctPosition = correct_player.position.toLowerCase();
+
+                            if (relation === 'correct') {
+                                return playerPosition === correctPosition;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        if (category === 'division') {
+                            // Extract the player and correct player's divisions
+                            const playerDivision = player.division.toLowerCase();
+                            const correctDivision = correct_player.division.toLowerCase();
+
+                            if (relation === 'correct') {
+                                return playerDivision === correctDivision;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        if (category === 'conference') {
+                            // Extract the player and correct player's conferences
+                            const playerConference = player.conference.toLowerCase();
+                            const correctConference = correct_player.conference.toLowerCase();
+
+                            if (relation === 'correct') {
+                                return playerConference === correctConference;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
                         // Add additional conditions for other categories (number, position, height, etc.)
                         return true; // For now, returning true for other categories
                     });
