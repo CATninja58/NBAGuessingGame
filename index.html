@@ -569,15 +569,34 @@
         function filterPlayers() {
             const filteredPlayers = playerData.filter(player => {
                 return guesses.every(guess => {
-                    const playerInfo = guess.player;
-                    return Object.keys(guess.selectedOptions).every(category => {
-                        const relation = guess.selectedOptions[category];
-                        return getRelation(category, playerInfo[category], correct_player[category]) === relation;
+                    return Object.entries(guess.selectedOptions).every(([category, relation]) => {
+                        if (category === 'age') {
+                            // Extract the player and correct player's ages
+                            const playerAge = parseInt(player.age);
+                            const correctAge = parseInt(correct_player.age);
+
+                            if (relation === 'younger v') {
+                                return playerAge < correctAge;
+                            } else if (relation === 'older ^') {
+                                return playerAge > correctAge;
+                            } else if (relation === 'close ^') {
+                                return Math.abs(playerAge - correctAge) <= 5;
+                            } else if (relation === 'close v') {
+                                return Math.abs(playerAge - correctAge) <= 5;
+                            } else if (relation === 'correct') {
+                                return playerAge === correctAge;
+                            } else {
+                                return true; // For other relations, assume it's valid unless specified
+                            }
+                        }
+                        // Add additional conditions for other categories (number, position, height, etc.)
+                        return true; // For now, returning true for other categories
                     });
                 });
             });
             return filteredPlayers;
         }
+
         
         function displayPlayers() {
             const isPossible = isPossibleMode();
