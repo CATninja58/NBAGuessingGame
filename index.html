@@ -542,46 +542,56 @@
                 height: 5, // inches
                 weight: 20
             };
-        
+
             let NewfilteredPlayers = playerData.filter(player => {
-            return guesses.every(guess => {
-                return Object.keys(guess.selectedOptions).every(category => {
-                const option = guess.selectedOptions[category];
-                const playerValue = player[category];
+                return guesses.every(guess => {
+                    return Object.keys(guess.selectedOptions).every(category => {
+                        const option = guess.selectedOptions[category];
+                        const playerValue = player[category];
+                        const guessedValue = guess.player[category];
 
-                console.log(`Category: ${category}, Option: ${option}, PlayerValue: ${playerValue}, GuessedValue: ${guess.player[category]}`);
+                        // Check if values exist before comparing
+                        if (playerValue === undefined || guessedValue === undefined) return false;
 
-                if (!option) return true;
+                        if (!option) return true;
 
-                if (option === 'correct') {
-                    return playerValue === guess.player[category];
-                } else if (option === 'wrong') {
-                    return playerValue !== guess.player[category];
-                } else if (category === 'height') {
-                    return filterOption(option, playerValue, guess.player[category], threshold[category]);
-                } else {
-                    return true;
-                }
+                        if (option === 'correct') {
+                            return playerValue === guessedValue;
+                        } else if (option === 'wrong') {
+                            return playerValue !== guessedValue;
+                        } else if (['height', 'weight', 'age', 'number'].includes(category)) {
+                            return filterOption(option, playerValue, guessedValue, threshold[category]);
+                        } else {
+                            return true;
+                        }
+                    });
                 });
             });
-            });
-            return NewfilteredPlayers
+            return NewfilteredPlayers;
         }
+
         function filterOption(option, playerValue, guessValue, threshold) {
+            // Convert to float for accuracy
+            const playerNum = parseFloat(playerValue);
+            const guessNum = parseFloat(guessValue);
+
+            if (isNaN(playerNum) || isNaN(guessNum)) return false; // Ensure valid numbers
+
             if (option === 'correct') {
-            return playerValue === guessValue;
-            } else if (option.includes('^')) {
-            return parseInt(playerValue) > parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) > threshold;
-            } else if (option.includes('v')) {
-            return parseInt(playerValue) < parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) > threshold;
+                return playerNum === guessNum;
             } else if (option === 'close ^') {
-            return parseInt(playerValue) > parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) <= threshold;
+                return playerNum > guessNum && Math.abs(playerNum - guessNum) <= threshold;
             } else if (option === 'close v') {
-            return parseInt(playerValue) < parseInt(guessValue) && Math.abs(parseInt(playerValue) - parseInt(guessValue)) <= threshold;
+                return playerNum < guessNum && Math.abs(playerNum - guessNum) <= threshold;
+            } else if (option.includes('^')) {
+                return playerNum > guessNum && Math.abs(playerNum - guessNum) > threshold;
+            } else if (option.includes('v')) {
+                return playerNum < guessNum && Math.abs(playerNum - guessNum) > threshold;
             } else {
-            return false;
+                return false;
             }
         }
+
 
         function displayPlayers() {
             const isPossible = isPossibleMode();
