@@ -490,30 +490,6 @@
             }
         }
 
-        function filterPlayers() {
-            NewfilteredPlayers = playerData.filter(player => {
-            return guesses.every(guess => {
-                return Object.keys(guess.selectedOptions).every(category => {
-                const option = guess.selectedOptions[category];
-                const playerValue = player[category];
-
-                if (!option) return true;
-
-                if (option === 'correct') {
-                    return playerValue === guess.player[category];
-                } else if (option === 'wrong') {
-                    return playerValue !== guess.player[category];
-                } else if (category === 'height') {
-                    filterCountry(option, playerValue, guess.player[category]);
-                } else {
-                    return
-                }
-                });
-            });
-            });
-            return NewfilteredPlayers
-        }
-
         function getPossiblePlayers() {
             return playerData.filter(player => {
                 return guesses.every(guess => {
@@ -559,7 +535,37 @@
             });
         }
 
-        function filterOption(option, playerValue, guessValue) {
+        function filterPlayers() {
+            const threshold = {
+                number: 15,
+                age: 5,
+                height: 5, // inches
+                weight: 20
+            };
+        
+            let NewfilteredPlayers = playerData.filter(player => {
+            return guesses.every(guess => {
+                return Object.keys(guess.selectedOptions).every(category => {
+                const option = guess.selectedOptions[category];
+                const playerValue = player[category];
+
+                if (!option) return true;
+
+                if (option === 'correct') {
+                    return playerValue === guess.player[category];
+                } else if (option === 'wrong') {
+                    return playerValue !== guess.player[category];
+                } else if (category === 'height') {
+                    return filterOption(option, playerValue, guess.player[category], threshold[category]);
+                } else {
+                    return false;
+                }
+                });
+            });
+            });
+            return NewfilteredPlayers
+        }
+        function filterOption(option, playerValue, guessValue, threshold) {
             if (option === 'correct') {
             return playerValue === guessValue;
             } else if (option.includes('^')) {
@@ -713,6 +719,7 @@
                 document.body.classList.remove('possible-mode');
             }
             localStorage.setItem('PossibleMode', isChecked);
+            displayPlayers(); // Update the player list display
         }
 
         function checkPopularModePreference() {
@@ -735,6 +742,7 @@
                 document.body.classList.remove('possible-mode');
                 document.getElementById('possibleModeToggle').checked = false;
             }
+            displayPlayers(); // Update the player list display
         }
 
         function isPopularMode() {
