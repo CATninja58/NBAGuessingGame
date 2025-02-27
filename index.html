@@ -549,6 +549,8 @@
                 const option = guess.selectedOptions[category];
                 const playerValue = player[category];
 
+                console.log(`Category: ${category}, Option: ${option}, PlayerValue: ${playerValue}, GuessedValue: ${guess.player[category]}`);
+
                 if (!option) return true;
 
                 if (option === 'correct') {
@@ -558,7 +560,7 @@
                 } else if (category === 'height') {
                     return filterOption(option, playerValue, guess.player[category], threshold[category]);
                 } else {
-                    return false;
+                    return true;
                 }
                 });
             });
