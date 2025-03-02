@@ -753,31 +753,35 @@
         function displayPlayers() {
             const isPossible = isPossibleMode();
             let NewfilteredPlayers = [];
-            if(isPossible) {
+
+            if (isPossible) {
                 NewfilteredPlayers = filterPlayers();
-                console.log("Possible Players:", NewfilteredPlayers);
             } else {
                 NewfilteredPlayers = playerData;
             }
+
+            // Allow guesses even in Possible Mode
+            enableGuessing();
+
             const playerList = document.getElementById("playerList");
             playerList.innerHTML = "";
 
             NewfilteredPlayers.forEach(player => {
-            const playerItem = document.createElement("tr");
-            
-            playerItem.innerHTML = `
-                <td>${player.player}</td>
-                <td>${player.number}</td>
-                <td>${player.position}</td>
-                <td>${player.age}</td>
-                <td>${player.height}</td>
-                <td>${player.weight}</td>
-                <td>${player.team}</td>
-                <td>${player.division}</td>
-                <td>${player.conference}</td>
-            `;
+                const playerItem = document.createElement("tr");
 
-            playerList.appendChild(playerItem);
+                playerItem.innerHTML = `
+                    <td>${player.player}</td>
+                    <td>${player.number}</td>
+                    <td>${player.position}</td>
+                    <td>${player.age}</td>
+                    <td>${player.height}</td>
+                    <td>${player.weight}</td>
+                    <td>${player.team}</td>
+                    <td>${player.division}</td>
+                    <td>${player.conference}</td>
+                `;
+
+                playerList.appendChild(playerItem);
             });
         }
 
@@ -955,6 +959,13 @@
 
         function checkPossibleModeToggledSettings(setting) {
             return document.getElementById(`possibleModeToggle${setting.charAt(0).toUpperCase() + setting.slice(1)}`).checked;
+        }
+
+        function enableGuessing() {
+            const guessInput = document.getElementById("guessInput");
+            if (guessInput) {
+                guessInput.disabled = false; // Ensure guessing is always allowed
+            }
         }
 
 
