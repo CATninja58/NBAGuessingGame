@@ -300,49 +300,49 @@
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Possible</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeTogglePosition" onchange="togglePossibleModePosition()">
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Age</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeToggleAge" onchange="togglePossibleModeAge()">
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Height</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeToggleHeight" onchange="togglePossibleModeHeight()">
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Weight</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeToggleWeight" onchange="togglePossibleModeWeight()">
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Team</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeToggleTeam" onchange="togglePossibleModeTeam()">
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Division</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeToggleDiv" onchange="togglePossibleModeDiv()">
                         <span class="slider"></span>
                     </label>
                 </div>
                 <div class="toggle-switch">
-                    <span>Number</span>
+                    <span>Conference</span>
                     <label class="switch">
                         <input type="checkbox" id="possibleModeToggleConference" onchange="togglePossibleModeConference()">
                         <span class="slider"></span>
@@ -960,6 +960,7 @@
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
         document.addEventListener('DOMContentLoaded', checkPossibleModePreference);
+        document.addEventListener('DOMContentLoaded', checkPossibleModeToggledSettings);
 
         loadCSV();
     </script>
