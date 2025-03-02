@@ -348,6 +348,13 @@
                         <span class="slider"></span>
                     </label>
                 </div>
+                <div class="toggle-switch">
+                    <span>Toggle All</span>
+                    <label class="switch">
+                        <input type="checkbox" id="possibleModeToggleAll" onchange="toggleAllPossibleModeSettings()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
         </div>
         <div class="footer-text">Made by u/CATninja58</div>
@@ -641,7 +648,6 @@
                 return guesses.every(guess => {
                     return Object.entries(guess.selectedOptions).every(([category, relation]) => {
                         if (category === 'age' && checkPossibleModeToggledSettings('age')) {
-                            // Extract the player and correct player's ages
                             const playerAge = parseInt(player.age);
                             const correctAge = parseInt(correct_player.age);
 
@@ -649,37 +655,33 @@
                                 return playerAge < correctAge;
                             } else if (relation === 'older ^') {
                                 return playerAge > correctAge;
-                            } else if (relation === 'close ^') {
-                                return Math.abs(playerAge - correctAge) <= 5;
                             } else if (relation === 'close v') {
-                                return Math.abs(playerAge - correctAge) <= 5;
+                                return playerAge <= correctAge && playerAge >= correctAge - 5;
+                            } else if (relation === 'close ^') {
+                                return playerAge >= correctAge && playerAge <= correctAge + 5;
                             } else if (relation === 'correct') {
                                 return playerAge === correctAge;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
                             }
+                            return true;
                         }
-                        else if (category === 'height' && checkPossibleModeToggledSettings('height')) {
-                            // Extract the player and correct player's heights
-                            const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
-                            const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b); // Convert height to inches
+                        if (category === 'height' && checkPossibleModeToggledSettings('height')) {
+                            const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
+                            const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
 
                             if (relation === 'shorter v') {
                                 return playerHeight < correctHeight;
                             } else if (relation === 'taller ^') {
                                 return playerHeight > correctHeight;
-                            } else if (relation === 'close ^') {
-                                return Math.abs(playerHeight - correctHeight) <= 5;
                             } else if (relation === 'close v') {
-                                return Math.abs(playerHeight - correctHeight) <= 5;
+                                return playerHeight <= correctHeight && playerHeight >= correctHeight - 5;
+                            } else if (relation === 'close ^') {
+                                return playerHeight >= correctHeight && playerHeight <= correctHeight + 5;
                             } else if (relation === 'correct') {
                                 return playerHeight === correctHeight;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
                             }
+                            return true;
                         }
-                        else if (category === 'weight' && checkPossibleModeToggledSettings('weight')) {
-                            // Extract the player and correct player's weights
+                        if (category === 'weight' && checkPossibleModeToggledSettings('weight')) {
                             const playerWeight = parseInt(player.weight);
                             const correctWeight = parseInt(correct_player.weight);
 
@@ -687,18 +689,16 @@
                                 return playerWeight < correctWeight;
                             } else if (relation === 'heavier ^') {
                                 return playerWeight > correctWeight;
-                            } else if (relation === 'close ^') {
-                                return Math.abs(playerWeight - correctWeight) <= 20;
                             } else if (relation === 'close v') {
-                                return Math.abs(playerWeight - correctWeight) <= 20;
+                                return playerWeight <= correctWeight && playerWeight >= correctWeight - 20;
+                            } else if (relation === 'close ^') {
+                                return playerWeight >= correctWeight && playerWeight <= correctWeight + 20;
                             } else if (relation === 'correct') {
                                 return playerWeight === correctWeight;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
                             }
+                            return true;
                         }
-                        else if (category === 'number' && checkPossibleModeToggledSettings('number')) {
-                            // Extract the player and correct player's numbers
+                        if (category === 'number' && checkPossibleModeToggledSettings('number')) {
                             const playerNumber = parseInt(player.number);
                             const correctNumber = parseInt(correct_player.number);
 
@@ -706,59 +706,26 @@
                                 return playerNumber < correctNumber;
                             } else if (relation === 'larger ^') {
                                 return playerNumber > correctNumber;
-                            } else if (relation === 'close ^') {
-                                return Math.abs(playerNumber - correctNumber) <= 15;
                             } else if (relation === 'close v') {
-                                return Math.abs(playerNumber - correctNumber) <= 15;
+                                return playerNumber <= correctNumber && playerNumber >= correctNumber - 15;
+                            } else if (relation === 'close ^') {
+                                return playerNumber >= correctNumber && playerNumber <= correctNumber + 15;
                             } else if (relation === 'correct') {
                                 return playerNumber === correctNumber;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
                             }
+                            return true;
                         }
-                        else if (category === 'team', checkPossibleModeToggledSettings('team')) {
-                            // Extract the player and correct player's teams
-                            const playerTeam = player.team.toLowerCase();
-                            const correctTeam = correct_player.team.toLowerCase();
-
-                            if (relation === 'correct') {
-                                return playerTeam === correctTeam;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
-                            }
+                        if (category === 'team' && checkPossibleModeToggledSettings('team')) {
+                            return player.team.toLowerCase() === correct_player.team.toLowerCase();
                         }
-                        else if (category === 'position' && checkPossibleModeToggledSettings('position')) {
-                            // Extract the player and correct player's positions
-                            const playerPosition = player.position.toLowerCase();
-                            const correctPosition = correct_player.position.toLowerCase();
-
-                            if (relation === 'correct') {
-                                return playerPosition === correctPosition;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
-                            }
+                        if (category === 'position' && checkPossibleModeToggledSettings('position')) {
+                            return player.position.toLowerCase() === correct_player.position.toLowerCase();
                         }
-                        else if (category === 'division' && checkPossibleModeToggledSettings('division')) {
-                            // Extract the player and correct player's divisions
-                            const playerDivision = player.division.toLowerCase();
-                            const correctDivision = correct_player.division.toLowerCase();
-
-                            if (relation === 'correct') {
-                                return playerDivision === correctDivision;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
-                            }
+                        if (category === 'division' && checkPossibleModeToggledSettings('division')) {
+                            return player.division.toLowerCase() === correct_player.division.toLowerCase();
                         }
-                        else if (category === 'conference' && checkPossibleModeToggledSettings('conference')) {
-                            // Extract the player and correct player's conferences
-                            const playerConference = player.conference.toLowerCase();
-                            const correctConference = correct_player.conference.toLowerCase();
-
-                            if (relation === 'correct') {
-                                return playerConference === correctConference;
-                            } else {
-                                return true; // For other relations, assume it's valid unless specified
-                            }
+                        if (category === 'conference' && checkPossibleModeToggledSettings('conference')) {
+                            return player.conference.toLowerCase() === correct_player.conference.toLowerCase();
                         }
                     });
                 });
@@ -952,10 +919,28 @@
             localStorage.setItem('PossibleModeConference', isChecked);
             displayPlayers(); // Update the player list display
         }
+        function toggleAllPossibleModeSettings() {
+            const toggleAll = document.getElementById("possibleModeToggleAll").checked;
+            const settingIds = [
+                "possibleModeToggleNumber",
+                "possibleModeTogglePosition",
+                "possibleModeToggleAge",
+                "possibleModeToggleHeight",
+                "possibleModeToggleWeight",
+                "possibleModeToggleTeam",
+                "possibleModeToggleDiv",
+                "possibleModeToggleConference"
+            ];
 
-        function checkPossibleModeToggledSettings(option){
-            return localStorage.getItem('PossibleMode' + option) === 'true';
+            settingIds.forEach(id => {
+                document.getElementById(id).checked = toggleAll;
+            });
         }
+
+        function checkPossibleModeToggledSettings(setting) {
+            return document.getElementById(`possibleModeToggle${setting.charAt(0).toUpperCase() + setting.slice(1)}`).checked;
+        }
+
 
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
