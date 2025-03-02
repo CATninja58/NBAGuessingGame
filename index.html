@@ -644,10 +644,27 @@
         }
 
         function filterPlayers() {
+            // Check if any possible mode setting is enabled
+            const possibleSettings = [
+                "age", "height", "weight", "number",
+                "team", "position", "division", "conference"
+            ];
+            
+            const isAnyFilterEnabled = possibleSettings.some(setting => checkPossibleModeToggledSettings(setting));
+
+            // If no filters are enabled, return all players
+            if (!isAnyFilterEnabled) {
+                return playerData;
+            }
+
             const filteredPlayers = playerData.filter(player => {
                 return guesses.every(guess => {
                     return Object.entries(guess.selectedOptions).every(([category, relation]) => {
-                        if (category === 'age' && checkPossibleModeToggledSettings('age')) {
+                        if (!checkPossibleModeToggledSettings(category)) {
+                            return true; // Skip filtering if setting isn't toggled
+                        }
+
+                        if (category === 'age') {
                             const playerAge = parseInt(player.age);
                             const correctAge = parseInt(correct_player.age);
 
@@ -656,32 +673,30 @@
                             } else if (relation === 'older ^') {
                                 return playerAge > correctAge;
                             } else if (relation === 'close v') {
-                                return playerAge <= correctAge && playerAge >= correctAge - 5;
+                                return playerAge < correctAge && Math.abs(playerAge - correctAge) <= 5;
                             } else if (relation === 'close ^') {
-                                return playerAge >= correctAge && playerAge <= correctAge + 5;
+                                return playerAge > correctAge && Math.abs(playerAge - correctAge) <= 5;
                             } else if (relation === 'correct') {
                                 return playerAge === correctAge;
                             }
-                            return true;
                         }
-                        if (category === 'height' && checkPossibleModeToggledSettings('height')) {
-                            const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
-                            const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
+                        else if (category === 'height') {
+                            const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                            const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b);
 
                             if (relation === 'shorter v') {
                                 return playerHeight < correctHeight;
                             } else if (relation === 'taller ^') {
                                 return playerHeight > correctHeight;
                             } else if (relation === 'close v') {
-                                return playerHeight <= correctHeight && playerHeight >= correctHeight - 5;
+                                return playerHeight < correctHeight && Math.abs(playerHeight - correctHeight) <= 5;
                             } else if (relation === 'close ^') {
-                                return playerHeight >= correctHeight && playerHeight <= correctHeight + 5;
+                                return playerHeight > correctHeight && Math.abs(playerHeight - correctHeight) <= 5;
                             } else if (relation === 'correct') {
                                 return playerHeight === correctHeight;
                             }
-                            return true;
                         }
-                        if (category === 'weight' && checkPossibleModeToggledSettings('weight')) {
+                        else if (category === 'weight') {
                             const playerWeight = parseInt(player.weight);
                             const correctWeight = parseInt(correct_player.weight);
 
@@ -690,15 +705,14 @@
                             } else if (relation === 'heavier ^') {
                                 return playerWeight > correctWeight;
                             } else if (relation === 'close v') {
-                                return playerWeight <= correctWeight && playerWeight >= correctWeight - 20;
+                                return playerWeight < correctWeight && Math.abs(playerWeight - correctWeight) <= 20;
                             } else if (relation === 'close ^') {
-                                return playerWeight >= correctWeight && playerWeight <= correctWeight + 20;
+                                return playerWeight > correctWeight && Math.abs(playerWeight - correctWeight) <= 20;
                             } else if (relation === 'correct') {
                                 return playerWeight === correctWeight;
                             }
-                            return true;
                         }
-                        if (category === 'number' && checkPossibleModeToggledSettings('number')) {
+                        else if (category === 'number') {
                             const playerNumber = parseInt(player.number);
                             const correctNumber = parseInt(correct_player.number);
 
@@ -707,33 +721,35 @@
                             } else if (relation === 'larger ^') {
                                 return playerNumber > correctNumber;
                             } else if (relation === 'close v') {
-                                return playerNumber <= correctNumber && playerNumber >= correctNumber - 15;
+                                return playerNumber < correctNumber && Math.abs(playerNumber - correctNumber) <= 15;
                             } else if (relation === 'close ^') {
-                                return playerNumber >= correctNumber && playerNumber <= correctNumber + 15;
+                                return playerNumber > correctNumber && Math.abs(playerNumber - correctNumber) <= 15;
                             } else if (relation === 'correct') {
                                 return playerNumber === correctNumber;
                             }
-                            return true;
                         }
-                        if (category === 'team' && checkPossibleModeToggledSettings('team')) {
-                            return player.team.toLowerCase() === correct_player.team.toLowerCase();
+                        else if (category === 'team') {
+                            return relation === 'correct' ? player.team.toLowerCase() === correct_player.team.toLowerCase() : true;
                         }
-                        if (category === 'position' && checkPossibleModeToggledSettings('position')) {
-                            return player.position.toLowerCase() === correct_player.position.toLowerCase();
+                        else if (category === 'position') {
+                            return relation === 'correct' ? player.position.toLowerCase() === correct_player.position.toLowerCase() : true;
                         }
-                        if (category === 'division' && checkPossibleModeToggledSettings('division')) {
-                            return player.division.toLowerCase() === correct_player.division.toLowerCase();
+                        else if (category === 'division') {
+                            return relation === 'correct' ? player.division.toLowerCase() === correct_player.division.toLowerCase() : true;
                         }
-                        if (category === 'conference' && checkPossibleModeToggledSettings('conference')) {
-                            return player.conference.toLowerCase() === correct_player.conference.toLowerCase();
+                        else if (category === 'conference') {
+                            return relation === 'correct' ? player.conference.toLowerCase() === correct_player.conference.toLowerCase() : true;
                         }
+
+                        return true; // Default case
                     });
                 });
             });
+
             return filteredPlayers;
         }
 
-        
+
         function displayPlayers() {
             const isPossible = isPossibleMode();
             let NewfilteredPlayers = [];
