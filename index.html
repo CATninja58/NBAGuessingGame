@@ -644,75 +644,47 @@
         }
 
         function filterPlayers() {
-            const filteredPlayers = playerData.filter(player => {
+            return playerData.filter(player => {
                 return guesses.every(guess => {
                     return Object.entries(guess.selectedOptions).every(([category, relation]) => {
                         if (category === 'age' && checkPossibleModeToggledSettings('age')) {
                             const playerAge = parseInt(player.age);
                             const correctAge = parseInt(correct_player.age);
-
-                            if (relation === 'younger v') {
-                                return playerAge < correctAge;
-                            } else if (relation === 'older ^') {
-                                return playerAge > correctAge;
-                            } else if (relation === 'close v') {
-                                return playerAge <= correctAge && playerAge >= correctAge - 5;
-                            } else if (relation === 'close ^') {
-                                return playerAge >= correctAge && playerAge <= correctAge + 5;
-                            } else if (relation === 'correct') {
-                                return playerAge === correctAge;
-                            }
+                            if (relation === 'younger v') return playerAge < correctAge;
+                            if (relation === 'older ^') return playerAge > correctAge;
+                            if (relation === 'close v') return playerAge <= correctAge && playerAge >= correctAge - 5;
+                            if (relation === 'close ^') return playerAge >= correctAge && playerAge <= correctAge + 5;
+                            if (relation === 'correct') return playerAge === correctAge;
                             return false;
                         }
                         if (category === 'height' && checkPossibleModeToggledSettings('height')) {
                             const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
                             const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
-
-                            if (relation === 'shorter v') {
-                                return playerHeight < correctHeight;
-                            } else if (relation === 'taller ^') {
-                                return playerHeight > correctHeight;
-                            } else if (relation === 'close v') {
-                                return playerHeight <= correctHeight && playerHeight >= correctHeight - 5;
-                            } else if (relation === 'close ^') {
-                                return playerHeight >= correctHeight && playerHeight <= correctHeight + 5;
-                            } else if (relation === 'correct') {
-                                return playerHeight === correctHeight;
-                            }
+                            if (relation === 'shorter v') return playerHeight < correctHeight;
+                            if (relation === 'taller ^') return playerHeight > correctHeight;
+                            if (relation === 'close v') return playerHeight <= correctHeight && playerHeight >= correctHeight - 5;
+                            if (relation === 'close ^') return playerHeight >= correctHeight && playerHeight <= correctHeight + 5;
+                            if (relation === 'correct') return playerHeight === correctHeight;
                             return false;
                         }
                         if (category === 'weight' && checkPossibleModeToggledSettings('weight')) {
                             const playerWeight = parseInt(player.weight);
                             const correctWeight = parseInt(correct_player.weight);
-
-                            if (relation === 'lighter v') {
-                                return playerWeight < correctWeight;
-                            } else if (relation === 'heavier ^') {
-                                return playerWeight > correctWeight;
-                            } else if (relation === 'close v') {
-                                return playerWeight <= correctWeight && playerWeight >= correctWeight - 20;
-                            } else if (relation === 'close ^') {
-                                return playerWeight >= correctWeight && playerWeight <= correctWeight + 20;
-                            } else if (relation === 'correct') {
-                                return playerWeight === correctWeight;
-                            }
+                            if (relation === 'lighter v') return playerWeight < correctWeight;
+                            if (relation === 'heavier ^') return playerWeight > correctWeight;
+                            if (relation === 'close v') return playerWeight <= correctWeight && playerWeight >= correctWeight - 20;
+                            if (relation === 'close ^') return playerWeight >= correctWeight && playerWeight <= correctWeight + 20;
+                            if (relation === 'correct') return playerWeight === correctWeight;
                             return false;
                         }
                         if (category === 'number' && checkPossibleModeToggledSettings('number')) {
                             const playerNumber = parseInt(player.number);
                             const correctNumber = parseInt(correct_player.number);
-
-                            if (relation === 'smaller v') {
-                                return playerNumber < correctNumber;
-                            } else if (relation === 'larger ^') {
-                                return playerNumber > correctNumber;
-                            } else if (relation === 'close v') {
-                                return playerNumber <= correctNumber && playerNumber >= correctNumber - 15;
-                            } else if (relation === 'close ^') {
-                                return playerNumber >= correctNumber && playerNumber <= correctNumber + 15;
-                            } else if (relation === 'correct') {
-                                return playerNumber === correctNumber;
-                            }
+                            if (relation === 'smaller v') return playerNumber < correctNumber;
+                            if (relation === 'larger ^') return playerNumber > correctNumber;
+                            if (relation === 'close v') return playerNumber <= correctNumber && playerNumber >= correctNumber - 15;
+                            if (relation === 'close ^') return playerNumber >= correctNumber && playerNumber <= correctNumber + 15;
+                            if (relation === 'correct') return playerNumber === correctNumber;
                             return false;
                         }
                         if (category === 'team' && checkPossibleModeToggledSettings('team')) {
@@ -731,7 +703,6 @@
                     });
                 });
             });
-            return filteredPlayers;
         }
 
         
