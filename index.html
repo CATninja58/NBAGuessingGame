@@ -643,138 +643,126 @@
             displayPlayers();  // Update the player list display
         }
 
-        // Function to filter players based on toggled Possible Mode settings
         function filterPlayers() {
-            // If no settings are toggled, return all players
-            const possibleModeSettings = [
-                'age', 'height', 'weight', 'number', 'team', 'position', 'division', 'conference'
-            ];
-            const activeSettings = possibleModeSettings.filter(setting => checkPossibleModeToggledSettings(setting));
-            
-            if (activeSettings.length === 0) {
-                return playerData; // No filters applied, return all players
-            }
-
-            return playerData.filter(player => {
+            const filteredPlayers = playerData.filter(player => {
                 return guesses.every(guess => {
                     return Object.entries(guess.selectedOptions).every(([category, relation]) => {
-                        if (!checkPossibleModeToggledSettings(category)) return true; // Skip if setting isn't active
-                        
-                        const playerValue = player[category];
-                        const correctValue = correct_player[category];
+                        if (category === 'age' && checkPossibleModeToggledSettings('age')) {
+                            const playerAge = parseInt(player.age);
+                            const correctAge = parseInt(correct_player.age);
 
-                        switch (category) {
-                            case 'age':
-                            case 'weight':
-                            case 'number':
-                                return compareNumericalValues(parseInt(playerValue), parseInt(correctValue), relation, category);
-                            case 'height':
-                                return compareNumericalValues(convertHeightToInches(playerValue), convertHeightToInches(correctValue), relation, category);
-                            default:
-                                return compareStringValues(playerValue, correctValue, relation);
+                            if (relation === 'younger v') {
+                                return playerAge < correctAge;
+                            } else if (relation === 'older ^') {
+                                return playerAge > correctAge;
+                            } else if (relation === 'close v') {
+                                return playerAge <= correctAge && playerAge >= correctAge - 5;
+                            } else if (relation === 'close ^') {
+                                return playerAge >= correctAge && playerAge <= correctAge + 5;
+                            } else if (relation === 'correct') {
+                                return playerAge === correctAge;
+                            }
+                            return false;
                         }
+                        if (category === 'height' && checkPossibleModeToggledSettings('height')) {
+                            const playerHeight = player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
+                            const correctHeight = correct_player.height.split('-').map(Number).reduce((a, b) => a * 12 + b, 0);
+
+                            if (relation === 'shorter v') {
+                                return playerHeight < correctHeight;
+                            } else if (relation === 'taller ^') {
+                                return playerHeight > correctHeight;
+                            } else if (relation === 'close v') {
+                                return playerHeight <= correctHeight && playerHeight >= correctHeight - 5;
+                            } else if (relation === 'close ^') {
+                                return playerHeight >= correctHeight && playerHeight <= correctHeight + 5;
+                            } else if (relation === 'correct') {
+                                return playerHeight === correctHeight;
+                            }
+                            return false;
+                        }
+                        if (category === 'weight' && checkPossibleModeToggledSettings('weight')) {
+                            const playerWeight = parseInt(player.weight);
+                            const correctWeight = parseInt(correct_player.weight);
+
+                            if (relation === 'lighter v') {
+                                return playerWeight < correctWeight;
+                            } else if (relation === 'heavier ^') {
+                                return playerWeight > correctWeight;
+                            } else if (relation === 'close v') {
+                                return playerWeight <= correctWeight && playerWeight >= correctWeight - 20;
+                            } else if (relation === 'close ^') {
+                                return playerWeight >= correctWeight && playerWeight <= correctWeight + 20;
+                            } else if (relation === 'correct') {
+                                return playerWeight === correctWeight;
+                            }
+                            return false;
+                        }
+                        if (category === 'number' && checkPossibleModeToggledSettings('number')) {
+                            const playerNumber = parseInt(player.number);
+                            const correctNumber = parseInt(correct_player.number);
+
+                            if (relation === 'smaller v') {
+                                return playerNumber < correctNumber;
+                            } else if (relation === 'larger ^') {
+                                return playerNumber > correctNumber;
+                            } else if (relation === 'close v') {
+                                return playerNumber <= correctNumber && playerNumber >= correctNumber - 15;
+                            } else if (relation === 'close ^') {
+                                return playerNumber >= correctNumber && playerNumber <= correctNumber + 15;
+                            } else if (relation === 'correct') {
+                                return playerNumber === correctNumber;
+                            }
+                            return false;
+                        }
+                        if (category === 'team' && checkPossibleModeToggledSettings('team')) {
+                            return player.team.toLowerCase() === correct_player.team.toLowerCase();
+                        }
+                        if (category === 'position' && checkPossibleModeToggledSettings('position')) {
+                            return player.position.toLowerCase() === correct_player.position.toLowerCase();
+                        }
+                        if (category === 'division' && checkPossibleModeToggledSettings('division')) {
+                            return player.division.toLowerCase() === correct_player.division.toLowerCase();
+                        }
+                        if (category === 'conference' && checkPossibleModeToggledSettings('conference')) {
+                            return player.conference.toLowerCase() === correct_player.conference.toLowerCase();
+                        }
+                        return true;
                     });
                 });
             });
+            return filteredPlayers;
         }
 
-        function compareNumericalValues(playerValue, correctValue, relation, category) {
-            const thresholds = { age: 5, height: 5, weight: 20, number: 15 };
-            const threshold = thresholds[category] || 0;
-            
-            switch (relation) {
-                case 'younger v': case 'shorter v': case 'lighter v': case 'smaller v':
-                    return playerValue < correctValue;
-                case 'older ^': case 'taller ^': case 'heavier ^': case 'larger ^':
-                    return playerValue > correctValue;
-                case 'close v':
-                    return playerValue >= correctValue - threshold && playerValue < correctValue;
-                case 'close ^':
-                    return playerValue <= correctValue + threshold && playerValue > correctValue;
-                case 'correct':
-                    return playerValue === correctValue;
-                default:
-                    return true;
-            }
-        }
-
-        function compareStringValues(playerValue, correctValue, relation) {
-            return relation === 'correct' ? playerValue.toLowerCase() === correctValue.toLowerCase() : true;
-        }
-
-        function convertHeightToInches(height) {
-            const [feet, inches] = height.split('-').map(Number);
-            return feet * 12 + inches;
-        }
-
-        // Update displayPlayers to allow guessing while Possible Mode is active
-        function displayPlayers() {
-            const isPossible = isPossibleMode();
-            let NewfilteredPlayers = isPossible ? filterPlayers() : playerData;
-
-            const playerList = document.getElementById("playerList");
-            playerList.innerHTML = "";
-
-            NewfilteredPlayers.forEach(player => {
-                const playerItem = document.createElement("tr");
-                playerItem.innerHTML = `
-                    <td>${player.player}</td>
-                    <td>${player.number}</td>
-                    <td>${player.position}</td>
-                    <td>${player.age}</td>
-                    <td>${player.height}</td>
-                    <td>${player.weight}</td>
-                    <td>${player.team}</td>
-                    <td>${player.division}</td>
-                    <td>${player.conference}</td>
-                `;
-                playerList.appendChild(playerItem);
-            });
-        }
-
-        // Ensure guessing is enabled when Possible Mode is toggled
-        function enableGuessing() {
-            document.getElementById("guessInput").disabled = false;
-        }
-
-        document.getElementById("possibleModeToggle").addEventListener("change", () => {
-            enableGuessing();
-            displayPlayers();
-        });
-
-
+        
         function displayPlayers() {
             const isPossible = isPossibleMode();
             let NewfilteredPlayers = [];
-
-            if (isPossible) {
+            if(isPossible) {
                 NewfilteredPlayers = filterPlayers();
+                console.log("Possible Players:", NewfilteredPlayers);
             } else {
                 NewfilteredPlayers = playerData;
             }
-
-            // Allow guesses even in Possible Mode
-            enableGuessing();
-
             const playerList = document.getElementById("playerList");
             playerList.innerHTML = "";
 
             NewfilteredPlayers.forEach(player => {
-                const playerItem = document.createElement("tr");
+            const playerItem = document.createElement("tr");
+            
+            playerItem.innerHTML = `
+                <td>${player.player}</td>
+                <td>${player.number}</td>
+                <td>${player.position}</td>
+                <td>${player.age}</td>
+                <td>${player.height}</td>
+                <td>${player.weight}</td>
+                <td>${player.team}</td>
+                <td>${player.division}</td>
+                <td>${player.conference}</td>
+            `;
 
-                playerItem.innerHTML = `
-                    <td>${player.player}</td>
-                    <td>${player.number}</td>
-                    <td>${player.position}</td>
-                    <td>${player.age}</td>
-                    <td>${player.height}</td>
-                    <td>${player.weight}</td>
-                    <td>${player.team}</td>
-                    <td>${player.division}</td>
-                    <td>${player.conference}</td>
-                `;
-
-                playerList.appendChild(playerItem);
+            playerList.appendChild(playerItem);
             });
         }
 
@@ -952,13 +940,6 @@
 
         function checkPossibleModeToggledSettings(setting) {
             return document.getElementById(`possibleModeToggle${setting.charAt(0).toUpperCase() + setting.slice(1)}`).checked;
-        }
-
-        function enableGuessing() {
-            const guessInput = document.getElementById("guessInput");
-            if (guessInput) {
-                guessInput.disabled = false; // Ensure guessing is always allowed
-            }
         }
 
 
