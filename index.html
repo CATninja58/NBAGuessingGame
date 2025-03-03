@@ -396,17 +396,15 @@
 
             const playerName = document.createElement("div");
             playerName.textContent = player.player;
-            
             guessesContainer.appendChild(playerName);
 
             const guessBoxes = document.createElement("div");
             guessBoxes.style.height = "50px"; /* Set fixed height */
             guessBoxes.classList.add("button-container");
-            guessBoxes.style.height = "50px"; /* Set fixed height */
             guessBoxes.classList.add("guess-boxes");
             guessesContainer.appendChild(guessBoxes);
 
-            const guess = { player, selectedOptions: {} };
+            const guess = { player, selectedOptions: {}, guessBoxes };
             guesses.push(guess);
 
             createButtons(player, guessBoxes, guess);
@@ -424,11 +422,11 @@
             });
         }
 
-        function replaceGuesses() {
+        function updateGuesses() {
             const isMetric = isMetricMode();
             guesses.forEach(guess => {
-            const guessBoxes = document.createElement("div");
-            guessBoxes.classList.add("button-container", "guess-boxes");
+            const guessBoxes = guess.guessBoxes;
+            guessBoxes.innerHTML = ""; // Clear existing buttons
 
             const categories = ["number", "position", "age", "height", "weight", "team", "division", "conference"];
             categories.forEach(category => {
@@ -457,9 +455,6 @@
                 button.className = getButtonColor(relation);
                 guessBoxes.appendChild(button);
             });
-
-            const guessesContainer = document.getElementById("guessesContainer");
-            guessesContainer.appendChild(guessBoxes);
             });
         }
 
@@ -725,6 +720,7 @@
             }
             localStorage.setItem('MetricMode', isChecked);
             displayPlayers(); // Update the player list display
+            updateGuesses();
         }
 
         function checkPopularModePreference() {
