@@ -579,10 +579,10 @@
                                 return playerAge < correctAge;
                             } else if (relation === 'older ^') {
                                 return playerAge > correctAge;
-                            } else if (relation === 'close ^') {
-                                return Math.abs(playerAge - correctAge) <= 5;
                             } else if (relation === 'close v') {
                                 return Math.abs(playerAge - correctAge) <= 5;
+                            } else if (relation === 'close ^') {
+                                return Math.abs(playerAge - correctAge) >= 5;
                             } else if (relation === 'correct') {
                                 return playerAge === correctAge;
                             } else {
