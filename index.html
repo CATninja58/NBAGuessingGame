@@ -279,6 +279,13 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <div class="toggle-switch">
+                <span>Imperial/Metric</span>
+                <label class="switch">
+                    <input type="checkbox" id="metricModeToggle" onchange="toggleMetricMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
         <div class="footer-text">Made by u/CATninja58</div>
         <h1>NBA Player Guesser</h1>
@@ -414,6 +421,45 @@
             button.className = getButtonColor(relation);
             guess.selectedOptions[category] = relation;
             container.appendChild(button);
+            });
+        }
+
+        function replaceGuesses() {
+            const isMetric = isMetricMode();
+            guesses.forEach(guess => {
+            const guessBoxes = document.createElement("div");
+            guessBoxes.classList.add("button-container", "guess-boxes");
+
+            const categories = ["number", "position", "age", "height", "weight", "team", "division", "conference"];
+            categories.forEach(category => {
+                const button = document.createElement("button");
+                let value = guess.player[category];
+                if (isMetric) {
+                if (category === "height") {
+                    const heightInInches = value.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                    value = (heightInInches * 2.54).toFixed(2) + " cm";
+                } else if (category === "weight") {
+                    value = (parseInt(value) * 0.453592).toFixed(2) + " kg";
+                }
+                } else {
+                if (category === "height") {
+                    const heightInCm = parseFloat(value);
+                    const totalInches = heightInCm / 2.54;
+                    const feet = Math.floor(totalInches / 12);
+                    const inches = Math.round(totalInches % 12);
+                    value = `${feet}-${inches}`;
+                } else if (category === "weight") {
+                    value = (parseFloat(value) / 0.453592).toFixed(2) + " lbs";
+                }
+                }
+                const relation = guess.selectedOptions[category];
+                button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${value} (${relation})</span>`;
+                button.className = getButtonColor(relation);
+                guessBoxes.appendChild(button);
+            });
+
+            const guessesContainer = document.getElementById("guessesContainer");
+            guessesContainer.appendChild(guessBoxes);
             });
         }
 
@@ -574,7 +620,7 @@
                             // Extract the player and correct player's ages
                             const playerAge = parseInt(player.age);
                             const correctAge = parseInt(correct_player.age);
-                            
+
                             if (relation === 'younger v') return playerAge < correctAge;
                             if (relation === 'older ^') return playerAge > correctAge;
                             if (relation === 'close v') return playerAge <= correctAge && playerAge >= correctAge - 5;
@@ -590,30 +636,42 @@
             });
             return filteredPlayers;
         }
-
-        
+  
         function displayPlayers() {
             const isPossible = isPossibleMode();
+            const isMetric = isMetricMode();
             let NewfilteredPlayers = [];
-            if(isPossible) {
-                NewfilteredPlayers = filterPlayers();
-                console.log("Possible Players:", NewfilteredPlayers);
+            if (isPossible) {
+            NewfilteredPlayers = filterPlayers();
+            console.log("Possible Players:", NewfilteredPlayers);
             } else {
-                NewfilteredPlayers = playerData;
+            NewfilteredPlayers = playerData;
             }
             const playerList = document.getElementById("playerList");
             playerList.innerHTML = "";
 
             NewfilteredPlayers.forEach(player => {
             const playerItem = document.createElement("tr");
-            
+
+            let height = player.height;
+            let weight = player.weight;
+
+            if (isMetric) {
+                // Convert height to cm
+                const heightInInches = height.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                height = (heightInInches * 2.54).toFixed(2) + " cm";
+
+                // Convert weight to kg
+                weight = (parseInt(weight) * 0.453592).toFixed(2) + " kg";
+            }
+
             playerItem.innerHTML = `
                 <td>${player.player}</td>
                 <td>${player.number}</td>
                 <td>${player.position}</td>
                 <td>${player.age}</td>
-                <td>${player.height}</td>
-                <td>${player.weight}</td>
+                <td>${height}</td>
+                <td>${weight}</td>
                 <td>${player.team}</td>
                 <td>${player.division}</td>
                 <td>${player.conference}</td>
@@ -658,6 +716,17 @@
             displayPlayers(); // Update the player list display
         }
 
+        function toggleMetricMode() {
+            const isChecked = document.getElementById('metricModeToggle').checked;
+            if (isChecked) {
+                document.body.classList.add('metric-mode');
+            } else {
+                document.body.classList.remove('metric-mode');
+            }
+            localStorage.setItem('MetricMode', isChecked);
+            displayPlayers(); // Update the player list display
+        }
+
         function checkPopularModePreference() {
             const isPopularMode = localStorage.getItem('PopularMode') === 'true';
             if (isPopularMode) {
@@ -682,6 +751,18 @@
             displayPlayers(); // Update the player list display
         }
 
+        function checkMetricModePreference() {
+            const isMetricMode = localStorage.getItem('MetricMode') === 'true';
+            if (isMetricMode) {
+                document.body.classList.add('metric-mode');
+                document.getElementById('metricModeToggle').checked = true;
+            } else {
+                document.body.classList.remove('metric-mode');
+                document.getElementById('metricModeToggle').checked = false;
+            }
+            displayPlayers(); // Update the player list display
+        }
+
         function isPopularMode() {
             return localStorage.getItem('PopularMode') === 'true';
         }
@@ -690,8 +771,14 @@
             return localStorage.getItem('PossibleMode') === 'true';
         }
 
+        function isMetricMode() {
+            return localStorage.getItem('MetricMode') === 'true';
+        }
+
         // Initialize popular mode preference on page load
         document.addEventListener('DOMContentLoaded', checkPopularModePreference);
+        document.addEventListener('DOMContentLoaded', checkPossibleModePreference);
+        document.addEventListener('DOMContentLoaded', checkMetricModePreference);
 
         loadCSV();
     </script>
