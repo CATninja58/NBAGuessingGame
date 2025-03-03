@@ -411,15 +411,31 @@
         }
 
         function createButtons(player, container, guess) {
+            const isMetric = isMetricMode();
             const categories = ["number", "position", "age", "height", "weight", "team", "division", "conference"];
             categories.forEach(category => {
             const button = document.createElement("button");
             const relation = getRelation(category, player[category], correct_player[category]);
+            if (category === 'weight'){
+                if (isMetric){
+                    weightOfPlayer = getMetric('weight', player[category])
+                    button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${weightOfPlayer} kg (${relation})</span>`; 
+                }
+            }
+            else if(category === 'height'){
+                if(isMetric){
+                    heightOfPlayer = getMetric('height', player[category])
+                    button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${heightOfPlayer} kg (${relation})</span>`; 
+                }
+            }
+            else{
             button.innerHTML = `<span class="button-text">${category.charAt(0).toUpperCase() + category.slice(1)}: ${player[category]} (${relation})</span>`;
             button.className = getButtonColor(relation);
             guess.selectedOptions[category] = relation;
             container.appendChild(button);
+            } 
             });
+            
         }
 
         function updateGuesses() {
@@ -447,7 +463,7 @@
                     const inches = Math.round(totalInches % 12);
                     value = `${feet}-${inches}`;
                 } else if (category === "weight") {
-                    value = (parseFloat(value) / 0.453592).toFixed(2) + " lbs";
+                    value = player.weight + " lbs";
                 }
                 }
                 const relation = guess.selectedOptions[category];
@@ -456,6 +472,18 @@
                 guessBoxes.appendChild(button);
             });
             });
+        }
+
+        function getMetric(category, units){
+            if (category === 'weight'){
+                return float(units) = int(units) * 0.453592
+                //return weight in kg
+            }
+            if (category === 'height'){
+                const heightInInches = units.split('-').map(Number).reduce((a, b) => a * 12 + b);
+                return float(heightInInches) = heightInInches * 2.54
+                //return height in cm
+            }
         }
 
         function getRelation(category, playerValue, correctValue) {
@@ -654,10 +682,10 @@
             if (isMetric) {
                 // Convert height to cm
                 const heightInInches = height.split('-').map(Number).reduce((a, b) => a * 12 + b);
-                height = (heightInInches * 2.54).toFixed(2) + " cm";
+                height = round((heightInInches * 2.54).toFixed(2)) + " cm";
 
                 // Convert weight to kg
-                weight = (parseInt(weight) * 0.453592).toFixed(2) + " kg";
+                weight = round((parseInt(weight) * 0.453592).toFixed(2) + " kg");
             }
 
             playerItem.innerHTML = `
